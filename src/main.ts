@@ -24,9 +24,9 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
-  
+    .use(IonicVue)
+    .use(router);
+
 router.isReady().then(() => {
-  app.mount('#app');
+    app.mount('#app');
 });
