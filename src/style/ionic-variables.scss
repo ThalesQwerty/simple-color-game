@@ -76,6 +76,49 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+
+  --ion-color-blue: #3880ff;
+    --ion-color-blue-rgb: 56, 128, 255;
+    --ion-color-blue-contrast: #ffffff;
+    --ion-color-blue-contrast-rgb: 255, 255, 255;
+    --ion-color-blue-shade: #3171e0;
+    --ion-color-blue-tint: #4c8dff;
+
+    --ion-color-red: #eb445a;
+    --ion-color-red: 235, 68, 90;
+    --ion-color-red-contrast: #ffffff;
+    --ion-color-red-contrast-rgb: 255, 255, 255;
+    --ion-color-red-shade: #cf3c4f;
+    --ion-color-red-tint: #ed576b;
+
+    --ion-color-green: #2dd36f;
+    --ion-color-green: 45, 211, 111;
+    --ion-color-green-contrast: #ffffff;
+    --ion-color-green-contrast-rgb: 255, 255, 255;
+    --ion-color-green-shade: #28ba62;
+    --ion-color-green-tint: #42d77d;
+
+    --ion-color-yellow: #ffc409;
+    --ion-color-yellow: 255, 196, 9;
+    --ion-color-yellow-contrast: #000000;
+    --ion-color-yellow-contrast-rgb: 0, 0, 0;
+    --ion-color-yellow-shade: #e0ac08;
+    --ion-color-yellow-tint: #ffca22;
+
+    --ion-color-orange: #ff8a4f !important;
+    --ion-color-orange: 255, 138, 79;
+    --ion-color-orange-contrast: #000000;
+    --ion-color-orange-contrast-rgb: 0, 0, 0;
+    --ion-color-orange-shade: #e07946;
+    --ion-color-orange-tint: #ff9661;
+
+    --ion-color-purple: #9517d4 !important;
+    --ion-color-purple: 149, 23, 212;
+    --ion-color-purple-contrast: #ffffff;
+    --ion-color-purple-contrast-rgb: 255, 255, 255;
+    --ion-color-purple-shade: #8314bb;
+    --ion-color-purple-tint: #a02ed8;
 }
 
 @media (prefers-color-scheme: dark) {

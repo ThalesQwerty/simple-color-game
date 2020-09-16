@@ -7,16 +7,10 @@
           <h1 id="title">
             Red
           </h1>
-          <hr />
-          <ion-grid>
-            <ion-row>
-              <ion-col size="6" v-for="(button, index) in buttons" :key="index">
-                <ColorButton :color="button.color" :text="button.text" />
-              </ion-col>
-            </ion-row>
-          </ion-grid>
         </div>
+          <Hexagon :buttons="buttons" />
       </div>
+      
     </ion-content>
   </ion-page>
 </template>
@@ -30,7 +24,9 @@ import {
   IonCol
 } from "@ionic/vue";
 
-import ColorButton from "../components/ColorButton.vue";
+import Hexagon from "../components/Hexagon.vue";
+
+import Colors from "../data/colors";
 
 import { defineComponent } from "vue";
 
@@ -42,18 +38,13 @@ export default defineComponent({
     IonGrid,
     IonRow,
     IonCol,
-    ColorButton
+    Hexagon
   },
   data() { return {
-    buttons: [
-      {text: "Hello", color: "blue"},
-      {text: "Hello", color: "red"},
-      {text: "Hello", color: "green"},
-      {text: "Hello", color: "yellow"},
-      {text: "Hello", color: "orange"},
-      {text: "Hello", color: "purple"}
-    ]
-  }}
+    buttons: Colors
+  }},
+  computed: {
+  }
 });
 </script>
 
