@@ -7,12 +7,13 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
   },
   "dependencies": {
     "@ionic/vue": "0.3.1",
     "@ionic/vue-router": "0.3.1",
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
     "vue": "^3.0.0-rc.10",
     "vue-router": "^4.0.0-beta.9"
   },
