@@ -2,12 +2,15 @@
   <ion-page>
     <ion-content :fullscreen="true">
       <div id="container">
-        <strong>
+        <div>
           <ion-icon name="color-palette" />
-        </strong>
-        <p>
-          Hello World!
-        </p>
+          <p>
+            Welcome to the
+          </p>
+          <h1 id="title">
+            Simple Color Game
+          </h1>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -29,29 +32,37 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-  #container {
-    text-align: center;
+<style scoped lang="scss">
+  @import "../style";
 
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+  #title {
+    margin-top: 0;
   }
 
-  #container strong {
-    font-size: 20px;
-    line-height: 26px;
+  #container {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background: $darkest;
+    color: $lightest;
+  
+    text-align: center;
   }
 
   #container p {
-    font-size: 16px;
-    line-height: 22px;
+    line-height: 1.5rem;
 
-    color: #8c8c8c;
+    color: $lightgray;
 
     margin: 0;
+  }
+
+  #container ion-icon {
+    font-size: 2rem;
   }
 
   #container a {
