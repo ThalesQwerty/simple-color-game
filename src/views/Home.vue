@@ -1,9 +1,9 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <div id="container">
+      <div class="container">
         <div>
-          <ion-icon name="color-palette" />
+          <ion-icon id="icon" name="color-palette" />
           <p>
             Welcome to the
           </p>
@@ -47,32 +47,13 @@ export default defineComponent({
 <style scoped lang="scss">
   @import "../style";
 
-  .text-gray {
-    color: $lightgray;
-  }
-
   #title {
     margin-top: 0;
     font-size: 3rem;
     font-weight: bolder;
   }
 
-  #container {
-    width: 100vw;
-    height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-    background: $darkest;
-    color: $lightest;
-  
-    text-align: center;
-  }
-
-  #container hr {
+  hr {
     border-bottom: solid $darkish 1px;
     margin-top: 1rem;
     margin-bottom: 2rem;
@@ -80,13 +61,13 @@ export default defineComponent({
     max-width: 64rem;
   }
 
-  #container p {
+  .container p {
     line-height: 1.5rem;
 
     margin: 0;
   }
 
-  #container ion-icon {
+  #icon {
     font-size: 5rem;
   }
 

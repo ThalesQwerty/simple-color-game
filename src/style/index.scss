@@ -2,3 +2,26 @@
 @import "./breakpoints.scss";
 
 $txt_default_color: $lightest;
+
+.text-gray {
+    color: $lightgray;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: $darkest;
+    color: $lightest;
+
+    text-align: center;
+}
+
+html {
+    font-size: 16px;
+}
