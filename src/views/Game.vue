@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts">
+
 import {
   IonContent,
   IonPage,
@@ -53,7 +54,7 @@ export default defineComponent({
   },
   data() { return {
     buttons: Colors,
-    side: Math.min(window.visualViewport.width / 2 - 36, 250),
+    side: Math.min(window.innerWidth / 2 - 36, 250),
 
     trueColor: Colors.GREEN,
     fakeColor: Colors.PURPLE,
@@ -92,7 +93,7 @@ export default defineComponent({
       return seconds;
     },
     updateSide() {
-      this.side = Math.min(window.visualViewport.width / 2 - 36, 250);
+      this.side = Math.min(window.innerWidth / 2 - 36, 250);
     },
     pickColor(color: object) {
       // if (id === this.trueColor.id) window.alert("OK");
