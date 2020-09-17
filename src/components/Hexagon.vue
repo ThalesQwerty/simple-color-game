@@ -1,5 +1,5 @@
 <template>
-    <div :style="dimensions" id="parent">
+    <div :style="style + rotate" id="parent">
         <ColorButton 
             v-for="(color, index) in buttons" 
             :side="side"
@@ -8,6 +8,7 @@
             :color="color"
             :key="index"
             :state="verifyState(color)"
+            :angle="angle"
             @pick="propagatePick"
         />
     </div>
@@ -32,19 +33,23 @@ export default defineComponent({
     thickness: Number,
     selectedColor: Object,
     rightColor: Object,
-    state: Number
+    state: Number,
+    angle: Number
   },
   computed: {
-    dimensions() {
-      return "width: " + (2 * this.side).toString() + "px; height: " + (Math.sqrt(3) * this.side).toString() + "px; transform: translate(25%);";
-    }
+    style() {
+      return "width: " + (2 * this.side).toString() + "px; height: " + (Math.sqrt(3) * this.side).toString() + "px; transform: translate(25%) rotate(" + this.angle + "deg); transform-origin: 25% 50%;";
+    },
   },
   methods: {
     propagatePick(color: object) {
       this.$emit("pick", color);
     },
     verifyState(color) {
-      if (this.state === GameState.POST_COLOR && this.rightColor.id === color.id) return ButtonState.RIGHT;
+      if (this.state === GameState.POST_COLOR) {
+        if (color.id === this.selectedColor.id && this.selectedColor.id === this.rightColor.id) return ButtonState.RIGHT;
+        if (this.selectedColor.id !== this.rightColor.id) return ButtonState.WRONG;
+      } 
       return ButtonState.DEFAULT;
     }
   }

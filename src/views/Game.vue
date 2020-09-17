@@ -19,6 +19,8 @@
           :selectedColor="selectedColor"
           :state="state"
           @pick="pickColor" 
+
+          :angle="angle"
           />
       </div>
       
@@ -66,7 +68,15 @@ export default defineComponent({
     colorTimer: null,
 
     score: 0,
-    lives: 3
+    lives: 3,
+    angle: 0,
+
+    animation: null, 
+    currentSpeed: 0,
+    desiredSpeed: 0,
+    acceleration: 30,
+    lastFrame: new Date().getTime(),
+    speedTimeout: null
   }},
   computed: {
     color() {
@@ -75,6 +85,8 @@ export default defineComponent({
   },
   created() {
     window.addEventListener("resize", this.updateSide);
+    this.changeSpeed();
+    this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
     countdown() {
@@ -92,22 +104,47 @@ export default defineComponent({
       this.seconds = seconds;
       return seconds;
     },
+    changeSpeed() {
+      const timer = Math.round(Math.random() * 15000 + 5000);
+      let sign = Math.random() >= 0.33 ? Math.sign(this.desiredSpeed) : -Math.sign(this.desiredSpeed);
+      if (this.desiredSpeed == 0) sign = Math.random() >= 0.5 ? 1 : -1;
+
+      this.desiredSpeed = (Math.random() * 20 + 10) * sign;
+
+      if (this.speedTimeout) clearInterval(this.speedTimeout);
+      this.speedTimeout = setTimeout(() => this.changeSpeed(), timer);
+    },
+    update() {
+      const deltaTime = (new Date().getTime() - this.lastFrame) / 1000;
+
+      if (Math.abs(this.desiredSpeed - this.currentSpeed) <= this.acceleration * deltaTime) {
+        this.currentSpeed = this.desiredSpeed;
+      }
+      else if (this.desiredSpeed > this.currentSpeed) {
+        this.currentSpeed += this.acceleration * deltaTime;
+      }
+      else {
+        this.currentSpeed -= this.acceleration * deltaTime;
+      }
+
+      this.angle += this.currentSpeed * deltaTime;
+      this.lastFrame += 1000 * deltaTime;
+    },
     updateSide() {
       this.side = Math.min(window.innerWidth / 2 - 36, 250);
     },
     pickColor(color: object) {
-      // if (id === this.trueColor.id) window.alert("OK");
-      // else window.alert("Nope!");
-
-      if (color["id"] === this.trueColor.id) {
+      if (this.state === GameState.COLOR) {
+        if (color["id"] === this.trueColor.id) {
         this.score ++;
-      }
-      else {
-        this.lives --;
-      }
+        }
+        else {
+          this.lives --;
+        }
 
-      this.selectedColor = color;
-      this.state = GameState.POST_COLOR;
+        this.selectedColor = color;
+        this.state = GameState.POST_COLOR;
+      }
     },
     prepareColor() {
       clearTimeout(this.colorTimer);
@@ -159,7 +196,7 @@ export default defineComponent({
         this.state = GameState.GAME_OVER;
       }
       else if (val < old) {
-        window.alert(this.lives + " lives remaining!");
+        // window.alert(this.lives + " lives remaining!");
       }
     },
     score(val, old) {

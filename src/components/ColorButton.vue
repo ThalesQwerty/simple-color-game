@@ -1,10 +1,10 @@
 <template>
-    <div id="button" :style="rotate">
+    <div id="button" :style="rotate" :class="shade">
         <div id="text" :class="turnText">
             {{ color.text }}
         </div>
         <svg :width="side" :height="thickness" id="hexagon-svg" @click="click">
-            <polygon :points="trapezoid" id="hexagon" :class="shade" :style="bgColor"/>
+            <polygon :points="trapezoid" id="hexagon"/>
         </svg>
     </div>
 </template>
@@ -21,7 +21,8 @@ export default defineComponent({
         side: Number,
         thickness: Number,
         offset: Number,
-        state: Number
+        state: Number,
+        angle: Number,
     },
     data() { return {
         center: Math.sqrt(3) / 2 * this.side,
@@ -45,11 +46,16 @@ export default defineComponent({
 
             return str;
         },
+        totalAngle() {
+            let normalized = (60 * this.order + this.angle) % 360;
+            if (normalized < 0) normalized += 360;
+            if (normalized > 180) normalized -= 360;
+            return normalized;
+        },
         turnText() {
-            return this.order < 2 || this.order == 5 ? "" : "upside-down";
+            return this.totalAngle > 90 || this.totalAngle <= -90 ? "upside-down" : "";
         },
         rotate() {
-            console.log(this.side);
             const angle = 60 * this.order;
             return "transform: rotate(" + angle.toString() + "deg) translateY(-" + (this.offset || 0).toString() + "px); transform-origin: 50% " + this.center.toString() + "px;";
         },
@@ -57,16 +63,13 @@ export default defineComponent({
             return "width: " + this.side + "px; height: " + this.thickness + ";";
         },
         shade() {
-            return this.order % 2 ? "dark " : "light ";
-        },
-        bgColor() {
-            let style = "";
+            let style = this.order % 2 ? "dark " : "light ";
             switch (this.state) {
                 case ButtonState.WRONG:
-                    style = "fill: black !important;";
+                    style = "wrong";
                     break;
                 case ButtonState.RIGHT:
-                    style = "fill: " + this.color.css.var + " !important;";
+                    style = "right fill-" + this.color.css.attr;
                     break;
             }
             return style;
@@ -106,20 +109,49 @@ export default defineComponent({
         cursor: pointer;
         transition: 0.1s;
     }
-    
-    #hexagon.dark {
-        fill: $darkish;
 
-        &:hover {
-            fill: $gray !important;
+    #button.dark {
+        #hexagon {
+            fill: $darkish;
+
+            &:hover {
+                fill: $gray;
+            }
+        }
+        #text {
+            color: $light;
         }
     }
 
-    #hexagon.light {
-        fill: $darkgray;
+    #button.light {
+        #hexagon {
+            fill: $darkgray;
 
-        &:hover {
-            fill: $gray !important;
+            &:hover {
+                fill: $gray;
+            }
+        }
+        #text {
+            color: $lighter;
+        }
+    }
+
+    #button.wrong {
+        #hexagon {
+            fill: $darker;
+            pointer-events: none;
+        }
+        #text {
+            color: $darkest;
+        }
+    }
+
+    #button.right {
+        #hexagon {
+            pointer-events: none;
+        }
+        #text {
+            color: white;
         }
     }
 

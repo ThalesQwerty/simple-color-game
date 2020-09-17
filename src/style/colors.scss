@@ -20,6 +20,14 @@ $white: white;
 
 // PALETTE
 
+$palette: "primary", "danger", "warning", "success", "orange", "purple";
+
+@each $color in $palette {
+    .fill-#{$color} {
+        fill: var(--ion-color-#{$color});
+    }
+}
+
 .ion-color-blue {
     --ion-color-base: #3880ff;
     --ion-color-base-rgb: 56, 128, 255;
