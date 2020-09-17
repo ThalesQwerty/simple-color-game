@@ -46,6 +46,10 @@ import {
   Difficulty
 } from "../data";
 
+import {
+  Random
+} from "../utils";
+
 import Timer from "../data/timers";
 
 import { defineComponent } from "vue";
@@ -121,7 +125,7 @@ export default defineComponent({
     countdown() {
       if (this.state !== GameState.COUNTDOWN) return 0;
 
-      const seconds = 3 - Math.floor((new Date().getTime() - this.startTime) / 1000);
+      const seconds = Math.ceil((Timer.COUNTDOWN - new Date().getTime() + this.startTime) / 1000);
 
       if (seconds <= 0) {
         this.randomColor();
@@ -134,11 +138,15 @@ export default defineComponent({
       return seconds;
     },
     changeSpeed() {
-      const timer = Math.round(Math.random() * (this.rotation.maxTimer - this.rotation.minTimer) + this.rotation.minTimer);
-      let sign = Math.random() >= this.rotation.turnChance ? Math.sign(this.desiredSpeed) : -Math.sign(this.desiredSpeed);
-      if (this.desiredSpeed == 0) sign = Math.random() >= 0.5 ? 1 : -1;
+      const timer = Random.number(this.rotation.minTimer, this.rotation.maxTimer);
+      let sign = Random.pick(
+        Random.option(Math.sign(this.desiredSpeed), this.rotation.turnChance),
+        Random.option(-Math.sign(this.desiredSpeed), 1 - this.rotation.turnChance),
+      );
 
-      this.desiredSpeed = (Math.random() * (this.rotation.maxSpeed - this.rotation.minSpeed) + this.rotation.minSpeed) * sign;
+      if (this.desiredSpeed == 0) sign = Random.pick(1, -1);
+
+      this.desiredSpeed = Random.number(this.rotation.minSpeed, this.rotation.maxSpeed) * sign;
 
       if (this.speedTimeout) clearInterval(this.speedTimeout);
       this.speedTimeout = setTimeout(() => this.changeSpeed(), timer);
@@ -177,15 +185,8 @@ export default defineComponent({
       this.colorTimer = setTimeout(this.randomColor, timer);
     },
     randomColor(sameAsText = false) {
-      function select(): object {
-        const index: string = Object.keys(Colors)[ 
-          Math.floor(Math.random() * Object.keys(Colors).length) 
-        ];
-        return Colors[index];
-      }
-
-      this.fakeColor = select();
-      this.trueColor = sameAsText ? this.fakeColor : select();
+      this.fakeColor = Random.pick(Colors);
+      this.trueColor = sameAsText ? this.fakeColor : Random.pick(Colors);
       this.state = GameState.COLOR;
 
       clearTimeout(this.colorTimer);
