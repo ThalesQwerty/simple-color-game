@@ -7,6 +7,7 @@
             :offset="0"
             :color="color"
             :key="index"
+            :state="verifyState(color)"
             @pick="propagatePick"
         />
     </div>
@@ -15,6 +16,8 @@
 <script lang="ts">
 
 import ColorButton from "./ColorButton.vue";
+import ButtonState from "../data/button_state";
+import GameState from "../data/game_state";
 
 import { defineComponent } from "vue";
 
@@ -26,7 +29,10 @@ export default defineComponent({
   props: {
     buttons: Object,
     side: Number,
-    thickness: Number
+    thickness: Number,
+    selectedColor: Object,
+    rightColor: Object,
+    state: Number
   },
   computed: {
     dimensions() {
@@ -34,8 +40,12 @@ export default defineComponent({
     }
   },
   methods: {
-    propagatePick(id: number) {
-      this.$emit("pick", id);
+    propagatePick(color: object) {
+      this.$emit("pick", color);
+    },
+    verifyState(color) {
+      if (this.state === GameState.POST_COLOR && this.rightColor.id === color.id) return ButtonState.RIGHT;
+      return ButtonState.DEFAULT;
     }
   }
 });

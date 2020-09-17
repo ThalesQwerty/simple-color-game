@@ -19,10 +19,10 @@
           </p>
         </div>
         <div id="play">
-            <ion-button size="large" expand="block">
-              Start game
-            </ion-button>
-          </div>
+          <ion-button size="large" expand="block" @click="play">
+            Start game
+          </ion-button>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -41,6 +41,11 @@ export default defineComponent({
     IonContent,
     IonPage,
   },
+  methods: {
+    play() {
+      window.open("/game", "_self");
+    }
+  }
 });
 </script>
 

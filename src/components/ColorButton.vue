@@ -4,13 +4,14 @@
             {{ color.text }}
         </div>
         <svg :width="side" :height="thickness" id="hexagon-svg" @click="click">
-            <polygon :points="trapezoid" id="hexagon" :class="shade" :style="bgColor" :active="active"/>
+            <polygon :points="trapezoid" id="hexagon" :class="shade" :style="bgColor"/>
         </svg>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import ButtonState from "../data/button_state";
 
 export default defineComponent({
     name: "ColorButton",
@@ -20,11 +21,11 @@ export default defineComponent({
         side: Number,
         thickness: Number,
         offset: Number,
+        state: Number
     },
     data() { return {
         center: Math.sqrt(3) / 2 * this.side,
-        order: this.color.id - 1,
-        active: false
+        order: this.color.id - 1
     }},
     computed: {
         trapezoid() {
@@ -59,14 +60,22 @@ export default defineComponent({
             return this.order % 2 ? "dark " : "light ";
         },
         bgColor() {
-            return this.active ? "fill: " + this.color.css.var + " !important;" : "";
+            let style = "";
+            switch (this.state) {
+                case ButtonState.WRONG:
+                    style = "fill: black !important;";
+                    break;
+                case ButtonState.RIGHT:
+                    style = "fill: " + this.color.css.var + " !important;";
+                    break;
+            }
+            return style;
         }
     },
     methods: {
         click() {
-            this.active = true;
-            this.$emit("pick", this.color.id);
-        }
+            this.$emit("pick", this.color);
+        },
     }
 });
 
