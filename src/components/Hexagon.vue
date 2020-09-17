@@ -1,12 +1,13 @@
 <template>
-    <div id="parent">
+    <div :style="dimensions" id="parent">
         <ColorButton 
             v-for="(color, index) in buttons" 
-            :side="250"
-            :thickness="50"
+            :side="side"
+            :thickness="thickness"
             :offset="0"
             :color="color"
             :key="index"
+            @pick="propagatePick"
         />
     </div>
 </template>
@@ -23,7 +24,19 @@ export default defineComponent({
     ColorButton
   },
   props: {
-    buttons: Object
+    buttons: Object,
+    side: Number,
+    thickness: Number
+  },
+  computed: {
+    dimensions() {
+      return "width: " + (2 * this.side).toString() + "px; height: " + (Math.sqrt(3) * this.side).toString() + "px; transform: translate(25%);";
+    }
+  },
+  methods: {
+    propagatePick(id: number) {
+      this.$emit("pick", id);
+    }
   }
 });
 </script>
@@ -33,6 +46,5 @@ export default defineComponent({
 
   #parent {
       position: relative;
-      transform: translate(25%, -50%);
   }
 </style>

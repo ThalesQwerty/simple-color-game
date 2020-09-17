@@ -48,6 +48,7 @@ export default defineComponent({
             return this.order < 2 || this.order == 5 ? "" : "upside-down";
         },
         rotate() {
+            console.log(this.side);
             const angulo = 60 * this.order;
             return "transform: rotate(" + angulo.toString() + "deg) translateY(-" + (this.offset || 0).toString() + "px); transform-origin: 50% " + this.center.toString() + "px;";
         },
@@ -58,13 +59,13 @@ export default defineComponent({
             return this.order % 2 ? "dark " : "light ";
         },
         bgColor() {
-            return this.active ? "fill: var(--ion-color-" + this.color.css.attr + ") !important;" : "";
+            return this.active ? "fill: " + this.color.css.var + " !important;" : "";
         }
     },
     methods: {
         click() {
-            console.log("a");
             this.active = true;
+            this.$emit("pick", this.color.id);
         }
     }
 });
@@ -83,6 +84,8 @@ export default defineComponent({
         align-items: center;
         z-index: 1;
         pointer-events: none;
+        text-transform: uppercase;
+        font-weight: bolder;
     }
 
     #text.upside-down {

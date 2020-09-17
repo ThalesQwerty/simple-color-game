@@ -5,6 +5,7 @@ export default {
         "text": "Red",
         "css":
         {
+            "var": "var(--ion-color-danger)",
             "class": "ion-color ion-color-danger",
             "attr": "danger"
         }
@@ -15,6 +16,7 @@ export default {
         "text": "Orange",
         "css":
         {
+            "var": "var(--ion-color-orange)",
             "class": "ion-color ion-color-orange",
             "attr": "orange"
         }
@@ -25,6 +27,7 @@ export default {
         "text": "Yellow",
         "css":
         {
+            "var": "var(--ion-color-warning)",
             "class": "ion-color ion-color-warning",
             "attr": "warning"
         }
@@ -35,6 +38,7 @@ export default {
         "text": "Green",
         "css":
         {
+            "var": "var(--ion-color-success)",
             "class": "ion-color ion-color-success",
             "attr": "success"
         }
@@ -45,6 +49,7 @@ export default {
         "text": "Blue",
         "css":
         {
+            "var": "var(--ion-color-primary)",
             "class": "ion-color ion-color-primary",
             "attr": "primary"
         }
@@ -55,6 +60,7 @@ export default {
         "text": "Purple",
         "css":
         {
+            "var": "var(--ion-color-purple)",
             "class": "ion-color ion-color-purple",
             "attr": "purple"
         }
