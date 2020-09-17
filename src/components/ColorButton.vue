@@ -50,8 +50,8 @@ export default defineComponent({
         },
         rotate() {
             console.log(this.side);
-            const angulo = 60 * this.order;
-            return "transform: rotate(" + angulo.toString() + "deg) translateY(-" + (this.offset || 0).toString() + "px); transform-origin: 50% " + this.center.toString() + "px;";
+            const angle = 60 * this.order;
+            return "transform: rotate(" + angle.toString() + "deg) translateY(-" + (this.offset || 0).toString() + "px); transform-origin: 50% " + this.center.toString() + "px;";
         },
         dimensions() {
             return "width: " + this.side + "px; height: " + this.thickness + ";";
