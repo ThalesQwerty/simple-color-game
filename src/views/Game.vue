@@ -42,7 +42,8 @@ import Hexagon from "../components/Hexagon.vue";
 
 import {
   Colors,
-  GameState
+  GameState,
+  Difficulty
 } from "../data";
 
 import Timer from "../data/timers";
@@ -77,10 +78,10 @@ export default defineComponent({
     lives: 3,
     angle: 0,
 
+    level: 1,
     animation: null, 
     currentSpeed: 0,
     desiredSpeed: 0,
-    acceleration: 30,
     lastFrame: new Date().getTime(),
     speedTimeout: null
   }},
@@ -100,6 +101,15 @@ export default defineComponent({
         "wrong ";
 
       return style;
+    },
+    difficulty() {
+      return Difficulty[this.level - 1];
+    },
+    rotation() {
+      return this.difficulty.rotation;
+    },
+    deltaTime() {
+      return (new Date().getTime() - this.lastFrame) / 1000;
     }
   },
   created() {
@@ -124,30 +134,28 @@ export default defineComponent({
       return seconds;
     },
     changeSpeed() {
-      const timer = Math.round(Math.random() * 15000 + 5000);
-      let sign = Math.random() >= 0.33 ? Math.sign(this.desiredSpeed) : -Math.sign(this.desiredSpeed);
+      const timer = Math.round(Math.random() * (this.rotation.maxTimer - this.rotation.minTimer) + this.rotation.minTimer);
+      let sign = Math.random() >= this.rotation.turnChance ? Math.sign(this.desiredSpeed) : -Math.sign(this.desiredSpeed);
       if (this.desiredSpeed == 0) sign = Math.random() >= 0.5 ? 1 : -1;
 
-      this.desiredSpeed = (Math.random() * 20 + 10) * sign;
+      this.desiredSpeed = (Math.random() * (this.rotation.maxSpeed - this.rotation.minSpeed) + this.rotation.minSpeed) * sign;
 
       if (this.speedTimeout) clearInterval(this.speedTimeout);
       this.speedTimeout = setTimeout(() => this.changeSpeed(), timer);
     },
     update() {
-      const deltaTime = (new Date().getTime() - this.lastFrame) / 1000;
-
-      if (Math.abs(this.desiredSpeed - this.currentSpeed) <= this.acceleration * deltaTime) {
+      if (Math.abs(this.desiredSpeed - this.currentSpeed) <= this.rotation.acceleration * this.deltaTime) {
         this.currentSpeed = this.desiredSpeed;
       }
       else if (this.desiredSpeed > this.currentSpeed) {
-        this.currentSpeed += this.acceleration * deltaTime;
+        this.currentSpeed += this.rotation.acceleration * this.deltaTime;
       }
       else {
-        this.currentSpeed -= this.acceleration * deltaTime;
+        this.currentSpeed -= this.rotation.acceleration * this.deltaTime;
       }
 
-      this.angle += this.currentSpeed * deltaTime;
-      this.lastFrame += 1000 * deltaTime;
+      this.angle += this.currentSpeed * this.deltaTime;
+      this.lastFrame = new Date().getTime();
     },
     updateSide() {
       this.side = Math.min(window.innerWidth / 2 - 36, 250);
@@ -181,7 +189,7 @@ export default defineComponent({
       this.state = GameState.COLOR;
 
       clearTimeout(this.colorTimer);
-      this.colorTimer = setTimeout(this.timeout, 2000);
+      this.colorTimer = setTimeout(this.timeout, this.difficulty.colors.timeout);
     },
     timeout() {
       this.state = GameState.WRONG_ANSWER;
