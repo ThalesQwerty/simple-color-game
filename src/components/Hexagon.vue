@@ -1,5 +1,5 @@
 <template>
-    <div :style="style + rotate" id="parent">
+    <div :style="style" id="parent">
         <ColorButton 
             v-for="(color, index) in buttons" 
             :side="side"
@@ -46,10 +46,8 @@ export default defineComponent({
       this.$emit("pick", color);
     },
     verifyState(color) {
-      if (this.state === GameState.POST_COLOR) {
-        if (color.id === this.selectedColor.id && this.selectedColor.id === this.rightColor.id) return ButtonState.RIGHT;
-        if (this.selectedColor.id !== this.rightColor.id) return ButtonState.WRONG;
-      } 
+      if (this.state === GameState.RIGHT_ANSWER && color.id === this.selectedColor.id) return ButtonState.RIGHT;
+      if (this.state === GameState.WRONG_ANSWER) return ButtonState.WRONG;
       return ButtonState.DEFAULT;
     }
   }

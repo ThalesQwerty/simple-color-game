@@ -1,7 +1,7 @@
 export default {
     "COUNTDOWN": 10,
-    "PRE_COLOR": 11,
-    "COLOR": 12,
-    "POST_COLOR": 13,
+    "COLOR": 11,
+    "RIGHT_ANSWER": 12,
+    "WRONG_ANSWER": 13,
     "GAME_OVER": 20
 }

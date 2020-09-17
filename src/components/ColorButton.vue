@@ -98,6 +98,7 @@ export default defineComponent({
         pointer-events: none;
         text-transform: uppercase;
         font-weight: bolder;
+        transition: color 0.1s;
     }
 
     #text.upside-down {
@@ -107,7 +108,8 @@ export default defineComponent({
 
     #hexagon {
         cursor: pointer;
-        transition: 0.1s;
+        pointer-events: all;
+        transition: fill 0.25s;
     }
 
     #button.dark {
@@ -140,6 +142,7 @@ export default defineComponent({
         #hexagon {
             fill: $darker;
             pointer-events: none;
+            transition: fill 0.5s;
         }
         #text {
             color: $darkest;
@@ -149,6 +152,7 @@ export default defineComponent({
     #button.right {
         #hexagon {
             pointer-events: none;
+            transition: fill 0s;
         }
         #text {
             color: white;

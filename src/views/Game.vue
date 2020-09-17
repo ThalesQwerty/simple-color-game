@@ -3,7 +3,7 @@
     <ion-content :fullscreen="true">
       <div class="container">
         <div id="text">
-          <h1 id="color" :style="color" v-if="!countdown()">
+          <h1 id="color" :style="color" :class="opacity" v-if="!countdown()">
             {{ fakeColor.text }}
           </h1>
           <h1 id="countdown" v-else>
@@ -39,8 +39,13 @@ import {
 } from "@ionic/vue";
 
 import Hexagon from "../components/Hexagon.vue";
-import Colors from "../data/colors";
-import GameState from "../data/game_state";
+
+import {
+  Colors,
+  GameState
+} from "../data";
+
+import Timer from "../data/timers";
 
 import { defineComponent } from "vue";
 
@@ -58,13 +63,14 @@ export default defineComponent({
     buttons: Colors,
     side: Math.min(window.innerWidth / 2 - 36, 250),
 
-    trueColor: Colors.GREEN,
-    fakeColor: Colors.PURPLE,
-    selectedColor: 0,
+    trueColor: null,
+    fakeColor: null,
+    selectedColor: null,
     
     startTime: new Date().getTime(),
     seconds: 3,
     state: GameState.COUNTDOWN,
+    lastState: GameState.COUNTDOWN,
     colorTimer: null,
 
     score: 0,
@@ -81,6 +87,19 @@ export default defineComponent({
   computed: {
     color() {
       return "color: " + this.trueColor.css.var + ";";
+    },
+    opacity() {
+      let style = "";
+
+      style += this.state === GameState.COLOR ? 
+        "" : 
+        "invisible ";
+
+      style += this.lastState === GameState.RIGHT_ANSWER ? 
+        "right " :
+        "wrong ";
+
+      return style;
     }
   },
   created() {
@@ -135,20 +154,19 @@ export default defineComponent({
     },
     pickColor(color: object) {
       if (this.state === GameState.COLOR) {
+        this.selectedColor = color;
+
         if (color["id"] === this.trueColor.id) {
-        this.score ++;
+          this.state = GameState.RIGHT_ANSWER;
         }
         else {
-          this.lives --;
+          this.state = GameState.WRONG_ANSWER;
         }
-
-        this.selectedColor = color;
-        this.state = GameState.POST_COLOR;
       }
     },
-    prepareColor() {
+    prepareColor(timer: number) {
       clearTimeout(this.colorTimer);
-      this.colorTimer = setTimeout(this.randomColor, 1000);
+      this.colorTimer = setTimeout(this.randomColor, timer);
     },
     randomColor(sameAsText = false) {
       function select(): object {
@@ -166,8 +184,7 @@ export default defineComponent({
       this.colorTimer = setTimeout(this.timeout, 2000);
     },
     timeout() {
-      this.state = GameState.POST_COLOR;
-      this.lives --;
+      this.state = GameState.WRONG_ANSWER;
     },
     reset() {
       this.startTime = new Date().getTime();
@@ -179,11 +196,16 @@ export default defineComponent({
     }
   },
   watch: {
-    state(val: number) {
+    state(val: number, old: number) {
+      this.lastState = old;
       switch (val) {
-        case GameState.PRE_COLOR:
-        case GameState.POST_COLOR:
-          this.prepareColor();
+        case GameState.RIGHT_ANSWER:
+          this.score ++;
+          this.prepareColor(Timer.RIGHT_ANSWER);
+          break;
+        case GameState.WRONG_ANSWER:
+          this.lives --;
+          this.prepareColor(Timer.WRONG_ANSWER);
           break;
         case GameState.GAME_OVER:
           window.alert("GAME OVER!\n\nYour score: " + this.score);
@@ -228,6 +250,11 @@ export default defineComponent({
     font-size: 3rem;
     font-weight: bolder;
   } 
+
+  #color.invisible {
+    opacity: 0;
+    transition: 0.25s;
+  }
 
   #countdown {
     @extend #color;
