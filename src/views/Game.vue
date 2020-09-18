@@ -10,6 +10,7 @@
             {{ seconds }}
           </h1>
         </div>
+        <Spinner @spin="spin" :difficulty="difficulty" :frame="frameCounter" />
         <Hexagon id="hexagon" 
           :buttons="buttons"
           :side="side" 
@@ -18,10 +19,9 @@
           :rightColor="trueColor"
           :selectedColor="selectedColor"
           :state="state"
-          @pick="pickColor" 
-
           :angle="angle"
-          />
+          @pick="pickColor" 
+        />
       </div>
       
     </ion-content>
@@ -38,6 +38,7 @@ import {
   IonCol
 } from "@ionic/vue";
 
+import Spinner from "../components/Spinner.vue";
 import Hexagon from "../components/Hexagon.vue";
 
 import {
@@ -62,7 +63,8 @@ export default defineComponent({
     IonGrid,
     IonRow,
     IonCol,
-    Hexagon
+    Hexagon,
+    Spinner
   },
   data() { return {
     buttons: Colors,
@@ -80,14 +82,12 @@ export default defineComponent({
 
     score: 0,
     lives: 3,
-    angle: 0,
 
     level: 1,
+
     animation: null, 
-    currentSpeed: 0,
-    desiredSpeed: 0,
-    lastFrame: new Date().getTime(),
-    speedTimeout: null
+    frameCounter: 0,
+    angle: 0,
   }},
   computed: {
     color() {
@@ -108,20 +108,16 @@ export default defineComponent({
     },
     difficulty() {
       return Difficulty[this.level - 1];
-    },
-    rotation() {
-      return this.difficulty.rotation;
-    },
-    deltaTime() {
-      return (new Date().getTime() - this.lastFrame) / 1000;
     }
   },
   created() {
     window.addEventListener("resize", this.updateSide);
-    this.changeSpeed();
     this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
+    spin(angle: number) {
+      this.angle = angle;
+    },
     countdown() {
       if (this.state !== GameState.COUNTDOWN) return 0;
 
@@ -137,33 +133,8 @@ export default defineComponent({
       this.seconds = seconds;
       return seconds;
     },
-    changeSpeed() {
-      const timer = Random.number(this.rotation.minTimer, this.rotation.maxTimer);
-      let sign = Random.pick(
-        Random.option(Math.sign(this.desiredSpeed), this.rotation.turnChance),
-        Random.option(-Math.sign(this.desiredSpeed), 1 - this.rotation.turnChance),
-      );
-
-      if (this.desiredSpeed == 0) sign = Random.pick(1, -1);
-
-      this.desiredSpeed = Random.number(this.rotation.minSpeed, this.rotation.maxSpeed) * sign;
-
-      if (this.speedTimeout) clearInterval(this.speedTimeout);
-      this.speedTimeout = setTimeout(() => this.changeSpeed(), timer);
-    },
     update() {
-      if (Math.abs(this.desiredSpeed - this.currentSpeed) <= this.rotation.acceleration * this.deltaTime) {
-        this.currentSpeed = this.desiredSpeed;
-      }
-      else if (this.desiredSpeed > this.currentSpeed) {
-        this.currentSpeed += this.rotation.acceleration * this.deltaTime;
-      }
-      else {
-        this.currentSpeed -= this.rotation.acceleration * this.deltaTime;
-      }
-
-      this.angle += this.currentSpeed * this.deltaTime;
-      this.lastFrame = new Date().getTime();
+      this.frameCounter++;
     },
     updateSide() {
       this.side = Math.min(window.innerWidth / 2 - 36, 250);
@@ -181,7 +152,6 @@ export default defineComponent({
       }
     },
     prepareColor(timer: number) {
-      clearTimeout(this.colorTimer);
       this.colorTimer = setTimeout(this.randomColor, timer);
     },
     randomColor(sameAsText = false) {
@@ -189,7 +159,6 @@ export default defineComponent({
       this.trueColor = sameAsText ? this.fakeColor : Random.pick(Colors);
       this.state = GameState.COLOR;
 
-      clearTimeout(this.colorTimer);
       this.colorTimer = setTimeout(this.timeout, this.difficulty.colors.timeout);
     },
     timeout() {
@@ -234,6 +203,9 @@ export default defineComponent({
       if (val > old) {
         console.log("Score: " + this.score);
       }
+    },
+    colorTimer(val, old) {
+      clearTimeout(old);
     }
   }
 });

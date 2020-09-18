@@ -1,5 +1,5 @@
 <template>
-    <div :style="style" id="parent">
+    <div id="parent" :style="style">
         <ColorButton 
             v-for="(color, index) in buttons" 
             :side="side"
@@ -17,8 +17,16 @@
 <script lang="ts">
 
 import ColorButton from "./ColorButton.vue";
-import ButtonState from "../data/button_state";
-import GameState from "../data/game_state";
+
+import {
+  ButtonState,
+  GameState,
+  Difficulty
+} from "../data";
+
+import {
+  Random
+} from "../utils";
 
 import { defineComponent } from "vue";
 
@@ -36,10 +44,16 @@ export default defineComponent({
     state: Number,
     angle: Number
   },
+  data() { return {
+    currentSpeed: 0,
+    desiredSpeed: 0,
+    speedTimeout: null,
+    lastFrame: new Date().getTime(),
+  }},
   computed: {
     style() {
       return "width: " + (2 * this.side).toString() + "px; height: " + (Math.sqrt(3) * this.side).toString() + "px; transform: translate(25%) rotate(" + this.angle + "deg); transform-origin: 25% 50%;";
-    },
+    }
   },
   methods: {
     propagatePick(color: object) {
@@ -58,6 +72,6 @@ export default defineComponent({
   @import "../style";
 
   #parent {
-      position: relative;
+    position: relative;
   }
 </style>

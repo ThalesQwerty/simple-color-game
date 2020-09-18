@@ -15,7 +15,10 @@ export default class Random {
 
         for (const i in options) {
             const option = options[i];
-            totalChance += Math.abs(option.chance || 1);
+
+            if (option.chance !== 0) {
+                totalChance += Math.abs(option.chance || 1);
+            }
 
             const newOption = {
                 value: option.option || option,
