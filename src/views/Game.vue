@@ -11,7 +11,7 @@
           </h1>
         </div>
         <Spinner @spin="spin" :difficulty="difficulty" :frame="frameCounter" />
-        <Hexagon id="hexagon" 
+        <ColorWheel id="wheel"
           :buttons="buttons"
           :side="side" 
           :thickness="50" 
@@ -39,7 +39,7 @@ import {
 } from "@ionic/vue";
 
 import Spinner from "../components/Spinner.vue";
-import Hexagon from "../components/Hexagon.vue";
+import ColorWheel from "../components/ColorWheel.vue";
 
 import {
   Colors,
@@ -63,7 +63,7 @@ export default defineComponent({
     IonGrid,
     IonRow,
     IonCol,
-    Hexagon,
+    ColorWheel,
     Spinner
   },
   data() { return {
@@ -115,6 +115,9 @@ export default defineComponent({
     this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
+    update() {
+      this.frameCounter++;
+    },
     spin(angle: number) {
       this.angle = angle;
     },
@@ -132,9 +135,6 @@ export default defineComponent({
 
       this.seconds = seconds;
       return seconds;
-    },
-    update() {
-      this.frameCounter++;
     },
     updateSide() {
       this.side = Math.min(window.innerWidth / 2 - 36, 250);
@@ -241,7 +241,7 @@ export default defineComponent({
     @extend #color;
   }
 
-  #hexagon {
+  #wheel {
     position: absolute;
   }
 </style>

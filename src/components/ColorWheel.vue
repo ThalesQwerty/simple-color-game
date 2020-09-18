@@ -31,7 +31,7 @@ import {
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Game",
+  name: "ColorWheel",
   components: {
     ColorButton
   },
