@@ -1,4 +1,5 @@
 export default {
+    "DEBUG": -1,
     "COUNTDOWN": 10,
     "COLOR": 11,
     "RIGHT_ANSWER": 12,

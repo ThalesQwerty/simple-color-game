@@ -21,12 +21,7 @@ import ColorButton from "./ColorButton.vue";
 import {
   ButtonState,
   GameState,
-  Difficulty
 } from "../data";
-
-import {
-  Random
-} from "../utils";
 
 import { defineComponent } from "vue";
 

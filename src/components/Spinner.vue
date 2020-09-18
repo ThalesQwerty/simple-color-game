@@ -45,8 +45,6 @@ export default defineComponent({
         Random.option(Math.sign(this.desiredSpeed), 1 - this.rotation.turnChance),
       );
 
-      console.log(timer);
-
       if (this.desiredSpeed == 0) sign = Random.pick(1, -1);
 
       this.desiredSpeed = Random.number(this.rotation.minSpeed, this.rotation.maxSpeed) * sign;

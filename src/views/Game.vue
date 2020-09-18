@@ -10,11 +10,13 @@
             {{ seconds }}
           </h1>
         </div>
+        <Hexagon :zindex="2" :minSide="side" :maxSide="side" :angle="angle" :fraction="1" fill="very-dark" />
+        <Hexagon :zindex="1" :minSide="side" :maxSide="maxSide" :angle="angle" :fraction="hexagonFraction" />
         <Spinner @spin="spin" :difficulty="difficulty" :frame="frameCounter" />
         <ColorWheel id="wheel"
           :buttons="buttons"
           :side="side" 
-          :thickness="50" 
+          :thickness="64" 
           
           :rightColor="trueColor"
           :selectedColor="selectedColor"
@@ -39,6 +41,7 @@ import {
 } from "@ionic/vue";
 
 import Spinner from "../components/Spinner.vue";
+import Hexagon from "../components/Hexagon.vue";
 import ColorWheel from "../components/ColorWheel.vue";
 
 import {
@@ -64,7 +67,8 @@ export default defineComponent({
     IonRow,
     IonCol,
     ColorWheel,
-    Spinner
+    Spinner,
+    Hexagon
   },
   data() { return {
     buttons: Colors,
@@ -73,6 +77,7 @@ export default defineComponent({
     trueColor: null,
     fakeColor: null,
     selectedColor: null,
+    timeColor: null,
     
     startTime: new Date().getTime(),
     seconds: 3,
@@ -87,9 +92,18 @@ export default defineComponent({
 
     animation: null, 
     frameCounter: 0,
+    lastFrame: new Date().getTime(),
+    deltaTime: 0,
     angle: 0,
+
+    timeRemaining: 0,
+    timeRemainingFraction: 1,
+    hexagonFraction: 1,
   }},
   computed: {
+    maxSide() {
+      return Math.max(window.innerWidth, window.innerHeight);
+    },
     color() {
       return "color: " + this.trueColor.css.var + ";";
     },
@@ -108,7 +122,7 @@ export default defineComponent({
     },
     difficulty() {
       return Difficulty[this.level - 1];
-    }
+    },
   },
   created() {
     window.addEventListener("resize", this.updateSide);
@@ -117,6 +131,29 @@ export default defineComponent({
   methods: {
     update() {
       this.frameCounter++;
+
+      let smoothness = 0.95;
+      
+      if (this.state !== GameState.COLOR) {
+        
+        this.timeRemainingFraction = 1;
+
+      } else {
+        smoothness = 0;
+
+        let t = this.difficulty.colors.timeout - new Date().getTime() + this.timeColor;
+        if (t < 0) t = 0;
+
+        let t0 = (t - 100) / this.difficulty.colors.timeout;
+        if (t0 > 1) t0 = 1;
+        if (t0 < 0) t0 = 0;
+
+        this.timeRemainign = t;
+        this.timeRemainingFraction = t0;
+      }
+
+      this.hexagonFraction = this.hexagonFraction + (this.timeRemainingFraction - this.hexagonFraction) * (1 - smoothness);
+      console.log(this.hexagonFraction);
     },
     spin(angle: number) {
       this.angle = angle;
@@ -158,7 +195,7 @@ export default defineComponent({
       this.fakeColor = Random.pick(Colors);
       this.trueColor = sameAsText ? this.fakeColor : Random.pick(Colors);
       this.state = GameState.COLOR;
-
+      this.timeColor = new Date().getTime();
       this.colorTimer = setTimeout(this.timeout, this.difficulty.colors.timeout);
     },
     timeout() {
@@ -174,6 +211,10 @@ export default defineComponent({
     }
   },
   watch: {
+    frameCounter() {
+      this.deltaTime = (new Date().getTime() - this.lastFrame) / 1000;
+      this.lastFrame += 1000 * this.deltaTime;
+    },
     state(val: number, old: number) {
       this.lastState = old;
       switch (val) {
@@ -215,6 +256,7 @@ export default defineComponent({
   @import "../style";
 
   .container {
+    background: $lightgray;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -224,6 +266,10 @@ export default defineComponent({
 
   .text-gray {
     color: $lightgray;
+  }
+
+  #text {
+    z-index: 10;
   }
 
   #color {
@@ -243,5 +289,6 @@ export default defineComponent({
 
   #wheel {
     position: absolute;
+    z-index: 5;
   }
 </style>

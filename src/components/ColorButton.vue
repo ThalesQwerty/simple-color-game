@@ -94,7 +94,7 @@ export default defineComponent({
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1;
+        z-index: 4;
         pointer-events: none;
         text-transform: uppercase;
         font-weight: bolder;
