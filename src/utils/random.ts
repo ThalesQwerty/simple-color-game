@@ -25,6 +25,8 @@ export default class Random {
                 chance: totalChance
             };
 
+            if (option.option === false || option.option === 0) newOption.value = option.option;
+
             newOptions.push(newOption);
         }
 

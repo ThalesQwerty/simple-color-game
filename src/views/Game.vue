@@ -12,7 +12,7 @@
         </div>
         <Hexagon :zindex="2" :minSide="side" :maxSide="side" :angle="angle" :fraction="1" fill="very-dark" />
         <Hexagon :zindex="1" :minSide="side" :maxSide="maxSide" :angle="angle" :fraction="hexagonFraction" />
-        <Spinner @spin="spin" :difficulty="difficulty" :frame="frameCounter" />
+        <Spinner @spin="spin" :difficulty="difficulty()" :frame="frameCounter" />
         <ColorWheel id="wheel"
           :buttons="buttons"
           :side="side" 
@@ -120,15 +120,15 @@ export default defineComponent({
 
       return style;
     },
-    difficulty() {
-      return Difficulty[this.level - 1];
-    },
   },
   created() {
     window.addEventListener("resize", this.updateSide);
     this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
+    difficulty() {
+      return Difficulty[this.level - 1];
+    },
     update() {
       this.frameCounter++;
 
@@ -141,10 +141,10 @@ export default defineComponent({
       } else {
         smoothness = 0;
 
-        let t = this.difficulty.colors.timeout - new Date().getTime() + this.timeColor;
+        let t = this.difficulty().colors.timeout - new Date().getTime() + this.timeColor;
         if (t < 0) t = 0;
 
-        let t0 = (t - 100) / this.difficulty.colors.timeout;
+        let t0 = (t - 100) / this.difficulty().colors.timeout;
         if (t0 > 1) t0 = 1;
         if (t0 < 0) t0 = 0;
 
@@ -153,7 +153,6 @@ export default defineComponent({
       }
 
       this.hexagonFraction = this.hexagonFraction + (this.timeRemainingFraction - this.hexagonFraction) * (1 - smoothness);
-      console.log(this.hexagonFraction);
     },
     spin(angle: number) {
       this.angle = angle;
@@ -164,7 +163,10 @@ export default defineComponent({
       const seconds = Math.ceil((Timer.COUNTDOWN - new Date().getTime() + this.startTime) / 1000);
 
       if (seconds <= 0) {
-        this.randomColor();
+        this.randomColor(Random.pick(
+          Random.option(true, this.difficulty().colors.sameAsTextChance),
+          Random.option(false, 1 - this.difficulty().colors.sameAsTextChance)
+        ));
       }
       else {
         setTimeout(() => this.countdown(), 1000);
@@ -189,14 +191,23 @@ export default defineComponent({
       }
     },
     prepareColor(timer: number) {
-      this.colorTimer = setTimeout(this.randomColor, timer);
+      this.colorTimer = setTimeout(() => this.randomColor(Random.pick(
+          Random.option(true, this.difficulty().colors.sameAsTextChance),
+          Random.option(false, 1 - this.difficulty().colors.sameAsTextChance)
+        )), 
+      timer);
     },
     randomColor(sameAsText = false) {
       this.fakeColor = Random.pick(Colors);
-      this.trueColor = sameAsText ? this.fakeColor : Random.pick(Colors);
+
+      if (sameAsText) this.trueColor = this.fakeColor;
+      else do {
+        this.trueColor = Random.pick(Colors);
+      } while (this.trueColor.id === this.fakeColor.id)
+
       this.state = GameState.COLOR;
       this.timeColor = new Date().getTime();
-      this.colorTimer = setTimeout(this.timeout, this.difficulty.colors.timeout);
+      this.colorTimer = setTimeout(this.timeout, this.difficulty().colors.timeout);
     },
     timeout() {
       this.state = GameState.WRONG_ANSWER;
@@ -240,9 +251,11 @@ export default defineComponent({
         // window.alert(this.lives + " lives remaining!");
       }
     },
-    score(val, old) {
-      if (val > old) {
-        console.log("Score: " + this.score);
+    score(val) {
+      let i = 0;
+      for (const dif of Difficulty) {
+        i++;
+        if (val >= dif.score) this.level = i;
       }
     },
     colorTimer(val, old) {
