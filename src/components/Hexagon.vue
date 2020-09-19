@@ -48,7 +48,6 @@ export default defineComponent({
     },
     methods: {
         shade(i: number) {
-            console.log("hexagon " + (i % 2 ? "dark " : "light "));
             return "hexagon " + (i % 2 ? "dark " : "light ");
         },
         hexagon(i: number) {
