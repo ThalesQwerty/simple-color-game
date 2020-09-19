@@ -103,18 +103,19 @@ export default defineComponent({
   @import "../style";
 
   .hexagon.very-dark {
-    fill: $darkest !important;
+    fill: $dark2 !important;
   }
 
   .hexagon.dark {
-    fill: $darker;
+    fill: $dark3;
    }
 
   .hexagon.light {
-    fill: $dark;
+    fill: $dark4;
    }
 
   #parent {
     position: absolute;
+    pointer-events: none;
   }
 </style>

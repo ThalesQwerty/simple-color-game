@@ -10,18 +10,19 @@
             {{ seconds }}
           </h1>
         </div>
-        <Hexagon :zindex="2" :minSide="side" :maxSide="side" :angle="angle" :fraction="1" fill="very-dark" />
-        <Hexagon :zindex="1" :minSide="side" :maxSide="maxSide" :angle="angle" :fraction="hexagonFraction" />
+        <Hexagon :zindex="2" :minSide="side() + 16" :maxSide="minSide" :angle="angle" :fraction="hexagonFraction" fill="very-dark" />
+        <!-- <Hexagon :zindex="1" :minSide="side()" :maxSide()="maxSide()" :angle="angle" :fraction="hexagonFraction" /> -->
         <Spinner @spin="spin" :difficulty="difficulty()" :frame="frameCounter" />
         <ColorWheel id="wheel"
           :buttons="buttons"
-          :side="side" 
-          :thickness="64" 
+          :side="wheelSide()" 
+          :thickness="wheelThickness()" 
           
           :rightColor="trueColor"
           :selectedColor="selectedColor"
           :state="state"
           :angle="angle"
+          :frame="frameCounter"
           @pick="pickColor" 
         />
       </div>
@@ -72,7 +73,9 @@ export default defineComponent({
   },
   data() { return {
     buttons: Colors,
-    side: Math.min(window.innerWidth / 2 - 36, 250),
+    rawSide: Math.min(window.innerWidth / 2 - 36, 250),
+    minSide: 128,
+    sideDistortionFactor: 5,
 
     trueColor: null,
     fakeColor: null,
@@ -101,9 +104,6 @@ export default defineComponent({
     hexagonFraction: 1,
   }},
   computed: {
-    maxSide() {
-      return Math.max(window.innerWidth, window.innerHeight);
-    },
     color() {
       return "color: " + this.trueColor.css.var + ";";
     },
@@ -126,13 +126,29 @@ export default defineComponent({
     this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
+    wheelThickness() {
+      const delta = this.side() - 24; // + (this.side() - this.minSide) * this.hexagonFraction;
+      return this.wheelSide() * Math.sqrt(3) / 2 - delta;
+    },
+    wheelSide() {
+      return this.maxSide(); //this.side() + this.hexagonFraction * (this.maxSide() - this.side());
+    },
+    maxSide() {
+      return Math.max(window.innerWidth, window.innerHeight);
+    },
+    side() {
+      return this.rawSide + this.sideDistortion();
+    },
+    sideDistortion() {
+      return Math.sin(new Date().getTime() / 1000) * this.sideDistortionFactor;
+    },
     difficulty() {
       return Difficulty[this.level - 1];
     },
     update() {
       this.frameCounter++;
 
-      let smoothness = 0.95;
+      let smoothness = 0.8;
       
       if (this.state !== GameState.COLOR) {
         
@@ -144,7 +160,7 @@ export default defineComponent({
         let t = this.difficulty().colors.timeout - new Date().getTime() + this.timeColor;
         if (t < 0) t = 0;
 
-        let t0 = (t - 100) / this.difficulty().colors.timeout;
+        let t0 = t / this.difficulty().colors.timeout;
         if (t0 > 1) t0 = 1;
         if (t0 < 0) t0 = 0;
 
@@ -176,7 +192,7 @@ export default defineComponent({
       return seconds;
     },
     updateSide() {
-      this.side = Math.min(window.innerWidth / 2 - 36, 250);
+      this.rawSide = Math.min(window.innerWidth / 2 - 36, 250);
     },
     pickColor(color: object) {
       if (this.state === GameState.COLOR) {
@@ -269,7 +285,7 @@ export default defineComponent({
   @import "../style";
 
   .container {
-    background: $lightgray;
+    background: $dark9;
     display: flex;
     justify-content: center;
     align-items: center;

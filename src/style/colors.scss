@@ -2,6 +2,28 @@
 
 $black: black;
 
+$dark0: #000a12;
+$dark1: #050f17;
+$dark2: #0a141c;
+$dark3: #0f1921;
+$dark4: #141e26;
+$dark5: #1a242c;
+$dark6: #1f2931;
+$dark7: #242e36;
+$dark8: #29333b;
+$dark9: #2e3840;
+
+$light0: #eceff1;
+$light1: #e7eaec;
+$light2: #e2e5e7;
+$light3: #dde0e2;
+$light4: #d8dbdd;
+$light5: #d3d6d8;
+$light6: #cdd0d2;
+$light7: #c8cbcd;
+$light8: #c3c6c8;
+$light9: #bec1c3;
+
 $darkest: #000a12;
 $darker: #102027;
 $dark: #1c313a;
@@ -24,7 +46,7 @@ $palette: "primary", "danger", "warning", "success", "orange", "purple";
 
 @each $color in $palette {
     .fill-#{$color} {
-        fill: var(--ion-color-#{$color});
+        fill: var(--ion-color-#{$color}) !important;
     }
 }
 

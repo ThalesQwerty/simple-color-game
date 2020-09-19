@@ -84,5 +84,6 @@ export default defineComponent({
   
   #parent {
       position: relative;
+      pointer-events: none;
   }
 </style>

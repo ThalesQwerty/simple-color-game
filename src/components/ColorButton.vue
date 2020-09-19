@@ -1,10 +1,12 @@
 <template>
     <div id="button" :style="rotate" :class="shade">
-        <div id="text" :class="turnText">
-            {{ color.text }}
+        <div id="text-parent">
+            <span id="text" :class="turnText">
+                {{ color.text }}
+            </span>
         </div>
-        <svg :width="side" :height="thickness" id="hexagon-svg" @click="click">
-            <polygon :points="trapezoid" id="hexagon"/>
+        <svg :width="side" :height="thickness" id="hexagon-svg" >
+            <polygon :points="trapezoid" id="hexagon" @click="click"/>
         </svg>
     </div>
 </template>
@@ -25,17 +27,19 @@ export default defineComponent({
         angle: Number,
     },
     data() { return {
-        center: Math.sqrt(3) / 2 * this.side,
         order: this.color.id - 1
     }},
     computed: {
+        center() {
+            return Math.sqrt(3) / 2 * this.side;
+        },
         trapezoid() {
             const points = [
                 [0, 0],
-                // [this.thickness / 2, this.thickness],
-                // [this.side - this.thickness / 2, this.thickness],
+                [this.thickness * Math.sqrt(3) / 3, this.thickness],
+                [this.side - this.thickness * Math.sqrt(3) / 3, this.thickness],
                 [this.side, 0],
-                [this.side / 2, this.center]
+                // [this.side / 2, this.center]
             ];
 
             let str = "";
@@ -66,7 +70,7 @@ export default defineComponent({
             let style = this.order % 2 ? "dark " : "light ";
             switch (this.state) {
                 case ButtonState.WRONG:
-                    style = "wrong";
+                    style += "wrong";
                     break;
                 case ButtonState.RIGHT:
                     style = "right fill-" + this.color.css.attr;
@@ -87,80 +91,114 @@ export default defineComponent({
 <style scoped lang="scss">
     @import "../style";
 
-    #text {
+    #text-parent {
         position: absolute; 
         width: 100%; 
         height: 100%;
+
         display: flex;
-        justify-content: center;
+        flex-direction: column-reverse;
         align-items: center;
+        padding-bottom: 2rem;
+
         z-index: 4;
+
         pointer-events: none;
+
         text-transform: uppercase;
-        font-weight: bolder;
+        font-size: 1.25rem;
+        letter-spacing: 0.125rem;
+        font-weight: lighter;
         transition: color 0.1s;
+    }
+
+    #text {
+        transform: rotate(0deg);
+        transform-origin: center center;
+        pointer-events: none;
     }
 
     #text.upside-down {
         transform: rotate(180deg);
-        transform-origin: center center;
+    }
+
+    #hexagon-svg {
+        pointer-events: visibleFill;
+        transition: 0.333s;
+        cursor: pointer;
     }
 
     #hexagon {
-        cursor: pointer;
-        pointer-events: all;
-        transition: fill 0.25s;
-    }
-
-    #button.dark {
-        #hexagon {
-            fill: $darkish;
-
-            &:hover {
-                fill: $gray;
-            }
-        }
-        #text {
-            color: $light;
-        }
-    }
-
-    #button.light {
-        #hexagon {
-            fill: $darkgray;
-
-            &:hover {
-                fill: $gray;
-            }
-        }
-        #text {
-            color: $lighter;
-        }
-    }
-
-    #button.wrong {
-        #hexagon {
-            fill: $darker;
-            pointer-events: none;
-            transition: fill 0.5s;
-        }
-        #text {
-            color: $darkest;
-        }
-    }
-
-    #button.right {
-        #hexagon {
-            pointer-events: none;
-            transition: fill 0s;
-        }
-        #text {
-            color: white;
-        }
+        pointer-events: visibleFill;
     }
 
     #button {
         position: absolute;
+        &.dark {
+            #hexagon-svg {
+                &:hover {
+                    #hexagon {
+                        fill: $dark9;
+                    }
+                }
+
+                #hexagon {
+                    fill: $dark7;               
+                }
+                #text {
+                    color: $light9;
+                }
+            }
+
+            &.wrong {
+                #hexagon {
+                    fill: $dark3 !important;
+                }
+                #text {
+                    color: $dark8;
+                }
+            }
+        }
+        &.light {
+            #hexagon-svg {
+                &:hover {
+                    #hexagon {
+                        fill: $dark9;
+                    }
+                }
+
+                #hexagon {
+                    fill: $dark8;                 
+                }
+                #text {
+                    color: $light8;
+                }
+            }
+
+            &.wrong {
+                #hexagon {
+                    fill: $dark4 !important;
+                }
+                #text {
+                    color: $dark9;
+                }
+            }
+        }
+        &.wrong {
+            #hexagon {
+                pointer-events: none;
+                transition: fill 0.25s;
+            }
+        }
+        &.right {
+            #hexagon {
+                pointer-events: none;
+                transition: fill 0s;
+            }
+            #text {
+                color: white;
+            }
+        }
     }
 
 </style>
