@@ -133,11 +133,11 @@ export default defineComponent({
 
     #hexagon-svg {
         pointer-events: visibleFill;
-        transition: 0.333s;
         cursor: pointer;
     }
 
     #hexagon {
+        transition: fill 0.25s;
         pointer-events: visibleFill;
     }
 
@@ -195,14 +195,14 @@ export default defineComponent({
         }
         &.wrong {
             #hexagon {
-                pointer-events: none;
+                // pointer-events: none;
                 transition: fill 0.25s;
             }
         }
         &.right {
             #hexagon {
-                pointer-events: none;
-                transition: fill 0s;
+                // pointer-events: none;
+                transition: fill 0.1s;
             }
             #text {
                 color: white;
