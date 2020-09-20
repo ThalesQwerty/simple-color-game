@@ -155,7 +155,7 @@ export default defineComponent({
                     fill: $dark7;               
                 }
                 #text {
-                    color: $light9;
+                    color: $light1;
                 }
             }
 
@@ -164,7 +164,7 @@ export default defineComponent({
                     fill: $dark3 !important;
                 }
                 #text {
-                    color: $dark8;
+                    color: $light9;
                 }
             }
         }
@@ -180,7 +180,7 @@ export default defineComponent({
                     fill: $dark8;                 
                 }
                 #text {
-                    color: $light8;
+                    color: $light0;
                 }
             }
 
@@ -189,7 +189,7 @@ export default defineComponent({
                     fill: $dark4 !important;
                 }
                 #text {
-                    color: $dark9;
+                    color: $light8;
                 }
             }
         }
