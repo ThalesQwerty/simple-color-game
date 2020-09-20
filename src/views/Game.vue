@@ -76,7 +76,10 @@ export default defineComponent({
     buttons: Colors,
     rawSide: Math.min(window.innerWidth / 2 - 36, 250),
     minSide: 128,
-    sideDistortionFactor: 5,
+
+    sideDistortion: 0,
+    sideDistortionFactor: 10,
+    spinSpeedIntegral: 0,
 
     trueColor: null,
     fakeColor: null,
@@ -142,13 +145,10 @@ export default defineComponent({
       return this.maxSide(); //this.side() + this.hexagonFraction * (this.maxSide() - this.side());
     },
     maxSide() {
-      return Math.max(window.innerWidth, window.innerHeight);
+      return Math.max(window.innerWidth, window.innerHeight) / Math.sqrt(3) * 2;
     },
     side() {
-      return this.rawSide + this.sideDistortion();
-    },
-    sideDistortion() {
-      return Math.sin(new Date().getTime() / 1000) * this.sideDistortionFactor;
+      return this.rawSide + this.sideDistortion;
     },
     difficulty() {
       return Difficulty[this.level - 1];
@@ -178,7 +178,9 @@ export default defineComponent({
 
       this.hexagonFraction = this.hexagonFraction + (this.timeRemainingFraction - this.hexagonFraction) * (1 - smoothness);
     },
-    spin(angle: number) {
+    spin(angle: number, currentSpeed: number) {
+      this.spinSpeedIntegral += currentSpeed;
+      this.sideDistortion = Math.sin(this.spinSpeedIntegral / 500) * this.sideDistortionFactor;
       this.angle = angle;
     },
     countdown() {
@@ -313,8 +315,10 @@ export default defineComponent({
 
   #color {
     margin-top: 0;
-    font-size: 3rem;
-    font-weight: bolder;
+    font-size: 2rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.25rem;
   } 
 
   #color.invisible {

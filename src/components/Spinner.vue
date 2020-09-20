@@ -67,7 +67,7 @@ export default defineComponent({
       this.angle += this.currentSpeed * this.deltaTime;
       this.lastFrame = new Date().getTime();
 
-      this.$emit("spin", this.angle);
+      this.$emit("spin", this.angle, this.currentSpeed);
     },
   },
   watch: {
