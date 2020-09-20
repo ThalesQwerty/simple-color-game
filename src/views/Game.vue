@@ -22,6 +22,7 @@
           :selectedColor="selectedColor"
           :state="state"
           :angle="angle"
+          :mouseAngle="mouseAngle"
           :frame="frameCounter"
           @pick="pickColor" 
         />
@@ -102,6 +103,8 @@ export default defineComponent({
     timeRemaining: 0,
     timeRemainingFraction: 1,
     hexagonFraction: 1,
+
+    mouseAngle: 0
   }},
   computed: {
     color() {
@@ -123,9 +126,14 @@ export default defineComponent({
   },
   created() {
     window.addEventListener("resize", this.updateSide);
+    window.addEventListener("mousemove", this.updateMouse)
     this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
+    updateMouse(e: MouseEvent) {
+      const angle = 90 + Math.atan2(e.pageY - window.innerHeight / 2, e.pageX - window.innerWidth / 2) * 180 / Math.PI;
+      this.mouseAngle = angle;
+    },
     wheelThickness() {
       const delta = this.side() - 24; // + (this.side() - this.minSide) * this.hexagonFraction;
       return this.wheelSide() * Math.sqrt(3) / 2 - delta;
@@ -291,6 +299,8 @@ export default defineComponent({
     align-items: center;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
+    position: relative;
   }
 
   .text-gray {

@@ -1,5 +1,5 @@
 <template>
-    <div id="button" :style="rotate" :class="shade">
+    <div id="button" :style="rotate + zIndex" :class="shade">
         <div id="text-parent">
             <span id="text" :class="turnText">
                 {{ color.text }}
@@ -25,6 +25,7 @@ export default defineComponent({
         offset: Number,
         state: Number,
         angle: Number,
+        mouseAngle: Number
     },
     data() { return {
         order: this.color.id - 1
@@ -32,6 +33,11 @@ export default defineComponent({
     computed: {
         center() {
             return Math.sqrt(3) / 2 * this.side;
+        },
+        zIndex() {
+            const angle = this.normalizeAngle(this.mouseAngle);
+            const isHover = angle > this.totalAngle - 30 && angle < this.totalAngle + 30;
+            return "z-index: " + (isHover ? "10" : "5") + "; ";
         },
         trapezoid() {
             const points = [
@@ -51,10 +57,7 @@ export default defineComponent({
             return str;
         },
         totalAngle() {
-            let normalized = (60 * this.order + this.angle) % 360;
-            if (normalized < 0) normalized += 360;
-            if (normalized > 180) normalized -= 360;
-            return normalized;
+            return this.normalizeAngle(60 * this.order + this.angle);
         },
         turnText() {
             return this.totalAngle > 90 || this.totalAngle <= -90 ? "upside-down" : "";
@@ -83,6 +86,12 @@ export default defineComponent({
         click() {
             this.$emit("pick", this.color);
         },
+        normalizeAngle(angle: number) {
+            let normalized = angle % 360;
+            if (normalized < 0) normalized += 360;
+            if (normalized > 180) normalized -= 360;
+            return normalized;
+        }
     }
 });
 

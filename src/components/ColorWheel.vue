@@ -9,6 +9,7 @@
             :key="index"
             :state="verifyState(color)"
             :angle="angle"
+            :mouseAngle="mouseAngle"
             @pick="propagatePick"
         />
     </div>
@@ -37,7 +38,8 @@ export default defineComponent({
     selectedColor: Object,
     rightColor: Object,
     state: Number,
-    angle: Number
+    angle: Number,
+    mouseAngle: Number
   },
   data() { return {
     currentSpeed: 0,
