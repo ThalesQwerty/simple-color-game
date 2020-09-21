@@ -3,9 +3,11 @@
     <ion-content :fullscreen="true">
       <div :class="container">
 
-        <Score :score="score" :lives="lives" :maxLives="maxLives" />
+        <Score v-if="isInGame" :score="score" :lives="lives" :maxLives="maxLives" />
 
-        <div id="text">
+        
+        <Menu v-if="isInMenu || isGameOver" @play="reset" :score="score" :gameOver="isGameOver" />
+        <div v-else id="center">
           <h1 id="color" :style="color" :class="opacity" v-if="!countdown()">
             {{ fakeColor.text }}
           </h1>
@@ -45,10 +47,13 @@ import {
   IonPage
 } from "@ionic/vue";
 
-import Spinner from "../components/Spinner.vue";
-import Hexagon from "../components/Hexagon.vue";
-import ColorWheel from "../components/ColorWheel.vue";
-import Score from "../components/Score.vue";
+import {
+  Spinner,
+  Hexagon,
+  ColorWheel,
+  Score,
+  Menu
+} from "../components";
 
 import {
   Colors,
@@ -73,7 +78,8 @@ export default defineComponent({
     ColorWheel,
     Spinner,
     Hexagon,
-    Score
+    Score,
+    Menu
   },
   data() { return {
     buttons: Colors,
@@ -91,8 +97,8 @@ export default defineComponent({
     
     startTime: new Date().getTime(),
     seconds: 3,
-    state: GameState.COUNTDOWN,
-    lastState: GameState.COUNTDOWN,
+    state: GameState.MENU,
+    lastState: GameState.MENU,
     colorTimer: null,
 
     score: 0,
@@ -133,6 +139,15 @@ export default defineComponent({
     },
     container() {
       return "container" + (this.state === GameState.WRONG_ANSWER ? " wrong" : "");
+    },
+    isInMenu() {
+      return this.state === GameState.MENU;
+    },
+    isInGame() {
+      return !this.isInMenu;
+    },
+    isGameOver() {
+      return this.state == GameState.GAME_OVER;
     }
   },
   created() {
@@ -277,17 +292,13 @@ export default defineComponent({
           this.prepareColor(Timer.WRONG_ANSWER);
           break;
         case GameState.GAME_OVER:
-          window.alert("GAME OVER!\n\nYour score: " + this.score);
-          this.reset();
+          clearTimeout(this.colorTimer);
           break;
       }
     },
     lives(val, old) {
       if (val <= 0) {
         this.state = GameState.GAME_OVER;
-      }
-      else if (val < old) {
-        // window.alert(this.lives + " lives remaining!");
       }
     },
     score(val) {
@@ -323,7 +334,7 @@ export default defineComponent({
     background: $dark3;
   }
 
-  #text {
+  #center {
     z-index: $z_game;
   }
 

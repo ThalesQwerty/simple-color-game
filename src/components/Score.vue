@@ -20,6 +20,10 @@
 
 import { defineComponent } from "vue";
 
+import {
+    WithZeroes
+} from "../utils";
+
 export default defineComponent({
     name: "Score",
     props: {
@@ -29,15 +33,7 @@ export default defineComponent({
     },
     computed: {
         scoreStr() {
-            const numZeros = 2 - Math.floor(Math.log10(this.score || 1));
-            let str = "";
-
-            for (let i = 0; i < numZeros; i++) {
-                str += "0";
-            }
-
-            str += this.score.toString();
-            return str;
+            return WithZeroes.parse(this.score, 3);
         }
     },
     methods: {
