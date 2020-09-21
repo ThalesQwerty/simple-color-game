@@ -13,7 +13,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ButtonState from "../data/button_state";
+import {
+    ButtonState,
+    Trigonometry
+} from "../data";
 
 export default defineComponent({
     name: "ColorButton",
@@ -33,7 +36,7 @@ export default defineComponent({
     }},
     computed: {
         center() {
-            return Math.sqrt(3) / 2 * this.side;
+            return Trigonometry.SIN_60 * this.side;
         },
         zIndex() {
             const angle = this.normalizeAngle(this.mouseAngle);
@@ -43,8 +46,8 @@ export default defineComponent({
         trapezoid() {
             const points = [
                 [0, 0],
-                [this.thickness * Math.sqrt(3) / 3, this.thickness],
-                [this.side - this.thickness * Math.sqrt(3) / 3, this.thickness],
+                [this.thickness * Trigonometry.CTG_60, this.thickness],
+                [this.side - this.thickness * Trigonometry.CTG_60, this.thickness],
                 [this.side, 0],
                 // [this.side / 2, this.center]
             ];

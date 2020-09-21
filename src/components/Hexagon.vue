@@ -10,6 +10,9 @@
 </template>
 
 <script lang="ts">
+import {
+    Trigonometry 
+} from "../data";
 
 import { defineComponent } from "vue";
 
@@ -41,10 +44,10 @@ export default defineComponent({
             return 2 * this.side;
         },
         height() {
-            return Math.sqrt(3) * this.side;
+            return Trigonometry.TAN_60 * this.side;
         },
         style() {
-            return "width: " + (2 * this.side).toString() + "px; height: " + (Math.sqrt(3) * this.side).toString() + "px; transform: rotate(" + this.angle + "deg); transform-origin: 50% 50%;";
+            return "width: " + this.width.toString() + "px; height: " + this.height.toString() + "px; transform: rotate(" + this.angle + "deg); transform-origin: 50% 50%;";
         },
         color() {
             return this.fill ? "fill: " + this.fill + " !important;" : "";

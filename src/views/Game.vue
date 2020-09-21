@@ -49,7 +49,8 @@ import ColorWheel from "../components/ColorWheel.vue";
 import {
   Colors,
   GameState,
-  Difficulty
+  Difficulty,
+  Trigonometry
 } from "../data";
 
 import {
@@ -137,18 +138,18 @@ export default defineComponent({
   },
   methods: {
     updateMouse(e: MouseEvent) {
-      const angle = 90 + Math.atan2(e.pageY - window.innerHeight / 2, e.pageX - window.innerWidth / 2) * 180 / Math.PI;
+      const angle = 90 + Math.atan2(e.pageY - window.innerHeight / 2, e.pageX - window.innerWidth / 2) * Trigonometry.DEG;
       this.mouseAngle = angle;
     },
     wheelThickness() {
       const delta = this.side() - 24; // + (this.side() - this.minSide) * this.hexagonFraction;
-      return this.wheelSide() * Math.sqrt(3) / 2 - delta;
+      return this.wheelSide() * Trigonometry.SIN_60 - delta;
     },
     wheelSide() {
       return this.maxSide(); //this.side() + this.hexagonFraction * (this.maxSide() - this.side());
     },
     maxSide() {
-      return Math.max(window.innerWidth, window.innerHeight) / Math.sqrt(3) * 2;
+      return Math.max(window.innerWidth, window.innerHeight) / Trigonometry.SIN_60;
     },
     side() {
       return this.rawSide + this.sideDistortion;
