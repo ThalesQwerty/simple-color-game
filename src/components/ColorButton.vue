@@ -1,7 +1,7 @@
 <template>
     <div id="button" :style="rotate + zIndex" :class="shade">
         <div id="text-parent">
-            <span id="text" :class="turnText">
+            <span id="text" :style="turnText">
                 {{ color.text }}
             </span>
         </div>
@@ -28,7 +28,8 @@ export default defineComponent({
         mouseAngle: Number
     },
     data() { return {
-        order: this.color.id - 1
+        order: this.color.id - 1,
+        lastState: 0,
     }},
     computed: {
         center() {
@@ -60,7 +61,7 @@ export default defineComponent({
             return this.normalizeAngle(60 * this.order + this.angle);
         },
         turnText() {
-            return this.totalAngle > 90 || this.totalAngle <= -90 ? "upside-down" : "";
+            return "transform: rotate(" + (-this.totalAngle).toString() + "deg);" //this.totalAngle > 90 || this.totalAngle <= -90 ? "upside-down" : "";
         },
         rotate() {
             const angle = 60 * this.order;
@@ -73,10 +74,18 @@ export default defineComponent({
             let style = this.order % 2 ? "dark " : "light ";
             switch (this.state) {
                 case ButtonState.WRONG:
-                    style += "wrong";
+                    style += "wrong ";
                     break;
                 case ButtonState.RIGHT:
-                    style = "right fill-" + this.color.css.attr;
+                    style = "right fill-" + this.color.css.attr + " ";
+                    break;
+            }
+            switch (this.lastState) {
+                case ButtonState.WRONG:
+                    style += "was-wrong ";
+                    break;
+                case ButtonState.RIGHT:
+                    style += "was-right ";
                     break;
             }
             return style;
@@ -91,6 +100,11 @@ export default defineComponent({
             if (normalized < 0) normalized += 360;
             if (normalized > 180) normalized -= 360;
             return normalized;
+        }
+    },
+    watch: {
+        state(val, old) {
+            this.lastState = old;
         }
     }
 });
@@ -108,7 +122,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column-reverse;
         align-items: center;
-        padding-bottom: 2rem;
+        padding-bottom: 3rem;
 
         z-index: 4;
 
@@ -122,90 +136,109 @@ export default defineComponent({
     }
 
     #text {
-        transform: rotate(0deg);
         transform-origin: center center;
         pointer-events: none;
     }
 
-    #text.upside-down {
-        transform: rotate(180deg);
-    }
-
-    #hexagon-svg {
-        pointer-events: visibleFill;
-        cursor: pointer;
-    }
-
-    #hexagon {
-        transition: fill 0.25s;
-        pointer-events: visibleFill;
-    }
-
     #button {
         position: absolute;
+        
+        #hexagon-svg {
+            pointer-events: visibleFill;
+            cursor: pointer;
+
+            &:hover {
+                #hexagon {
+                    transition: fill $hover_color_in;
+                }
+            }
+        }
+
+        #hexagon {
+            transition: fill $hover_color_out;
+            pointer-events: visibleFill;
+        }
+
         &.dark {
             #hexagon-svg {
                 &:hover {
                     #hexagon {
-                        fill: $dark9;
+                        fill: $dark6;
                     }
                 }
 
                 #hexagon {
-                    fill: $dark7;               
+                    fill: $dark3;               
                 }
-                #text {
-                    color: $light1;
-                }
+            }
+
+            #text {
+                color: $light7;
             }
 
             &.wrong {
                 #hexagon {
-                    fill: $dark3 !important;
+                    fill: $dark0 !important;
                 }
                 #text {
-                    color: $light9;
+                    color: $dark9;
                 }
             }
         }
+
         &.light {
             #hexagon-svg {
                 &:hover {
                     #hexagon {
-                        fill: $dark9;
+                        fill: $dark6;
                     }
                 }
 
                 #hexagon {
-                    fill: $dark8;                 
+                    fill: $dark4;                 
                 }
-                #text {
-                    color: $light0;
-                }
+            }
+
+            #text {
+                color: $light8;
             }
 
             &.wrong {
                 #hexagon {
-                    fill: $dark4 !important;
+                    fill: $dark1 !important;
                 }
                 #text {
-                    color: $light8;
+                    color: $darkA;
                 }
             }
         }
+
         &.wrong {
             #hexagon {
-                // pointer-events: none;
-                transition: fill 0.25s;
+                pointer-events: none;
+                transition: fill $wrong_color_in;
             }
         }
+
         &.right {
             #hexagon {
                 // pointer-events: none;
-                transition: fill 0.1s;
+                transition: fill $right_color_in;
             }
             #text {
                 color: white;
+            }
+        }
+
+        &.was-wrong {
+            #hexagon {
+                transition: fill $wrong_color_out;
+            }
+        }
+
+        &.was-right {
+            #hexagon {
+                transition: fill $right_color_out;
             }
         }
     }

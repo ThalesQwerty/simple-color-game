@@ -1,7 +1,10 @@
 <template>
     <div id="parent" :style="style + zIndex">
-        <svg :width="width" :height="height">
+        <svg v-if="triangles" :width="width" :height="height">
             <polygon :points="hexagon(i)" :class="shade(i) + fill" v-for="i in [1,2,3,4,5,6]" :key="i"/>
+        </svg>
+        <svg v-else :width="width" :height="height">
+            <polygon :points="hexagon(0)" :class="shade(0) + fill"/>
         </svg>
     </div>
 </template>
@@ -18,7 +21,8 @@ export default defineComponent({
         fraction: Number,
         angle: Number,
         zindex: Number,
-        fill: String
+        fill: String,
+        triangles: Boolean
     },
     data() { return {
         currentSpeed: 0,
@@ -103,7 +107,7 @@ export default defineComponent({
   @import "../style";
 
   .hexagon.very-dark {
-    fill: $dark2 !important;
+    fill: $dark1 !important;
   }
 
   .hexagon.dark {

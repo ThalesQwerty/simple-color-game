@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <div class="container">
+      <div :class="container">
         <div id="text">
           <h1 id="color" :style="color" :class="opacity" v-if="!countdown()">
             {{ fakeColor.text }}
@@ -11,7 +11,7 @@
           </h1>
         </div>
         <Hexagon :zindex="2" :minSide="side() + 16" :maxSide="minSide" :angle="angle" :fraction="hexagonFraction" fill="very-dark" />
-        <!-- <Hexagon :zindex="1" :minSide="side()" :maxSide()="maxSide()" :angle="angle" :fraction="hexagonFraction" /> -->
+        <!-- <Hexagon :zindex="1" :minSide="side()" :maxSide()="maxSide()" :angle="angle" :fraction="hexagonFraction" triangles/> -->
         <Spinner @spin="spin" :difficulty="difficulty()" :frame="frameCounter" />
         <ColorWheel id="wheel"
           :buttons="buttons"
@@ -126,6 +126,9 @@ export default defineComponent({
 
       return style;
     },
+    container() {
+      return "container" + (this.state === GameState.WRONG_ANSWER ? " wrong" : "");
+    }
   },
   created() {
     window.addEventListener("resize", this.updateSide);
@@ -295,7 +298,8 @@ export default defineComponent({
   @import "../style";
 
   .container {
-    background: $dark9;
+    background: $dark5;
+    transition: background $wrong_color_out;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -305,8 +309,8 @@ export default defineComponent({
     position: relative;
   }
 
-  .text-gray {
-    color: $lightgray;
+  .container.wrong {
+    background: $dark3;
   }
 
   #text {
@@ -315,8 +319,8 @@ export default defineComponent({
 
   #color {
     margin-top: 0;
-    font-size: 2rem;
-    font-weight: normal;
+    font-size: 2.25rem;
+    font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.25rem;
   } 
