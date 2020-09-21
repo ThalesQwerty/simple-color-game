@@ -2,6 +2,9 @@
   <ion-page>
     <ion-content :fullscreen="true">
       <div :class="container">
+
+        <Score :score="score" :lives="lives" :maxLives="maxLives" />
+
         <div id="text">
           <h1 id="color" :style="color" :class="opacity" v-if="!countdown()">
             {{ fakeColor.text }}
@@ -10,9 +13,11 @@
             {{ seconds }}
           </h1>
         </div>
+
         <Hexagon :zindex="2" :minSide="side() + 16" :maxSide="minSide" :angle="angle" :fraction="hexagonFraction" fill="very-dark" />
         <!-- <Hexagon :zindex="1" :minSide="side()" :maxSide()="maxSide()" :angle="angle" :fraction="hexagonFraction" triangles/> -->
         <Spinner @spin="spin" :difficulty="difficulty()" :frame="frameCounter" />
+
         <ColorWheel id="wheel"
           :buttons="buttons"
           :side="wheelSide()" 
@@ -26,6 +31,7 @@
           :frame="frameCounter"
           @pick="pickColor" 
         />
+
       </div>
       
     </ion-content>
@@ -36,15 +42,13 @@
 
 import {
   IonContent,
-  IonPage,
-  IonGrid,
-  IonRow,
-  IonCol
+  IonPage
 } from "@ionic/vue";
 
 import Spinner from "../components/Spinner.vue";
 import Hexagon from "../components/Hexagon.vue";
 import ColorWheel from "../components/ColorWheel.vue";
+import Score from "../components/Score.vue";
 
 import {
   Colors,
@@ -66,12 +70,10 @@ export default defineComponent({
   components: {
     IonContent,
     IonPage,
-    IonGrid,
-    IonRow,
-    IonCol,
     ColorWheel,
     Spinner,
-    Hexagon
+    Hexagon,
+    Score
   },
   data() { return {
     buttons: Colors,
@@ -95,8 +97,10 @@ export default defineComponent({
 
     score: 0,
     lives: 3,
+    maxLives: 3,
 
     level: 1,
+    currentTimeout: 0,
 
     animation: null, 
     frameCounter: 0,
@@ -169,10 +173,10 @@ export default defineComponent({
       } else {
         smoothness = 0;
 
-        let t = this.difficulty().colors.timeout - new Date().getTime() + this.timeColor;
+        let t = this.currentTimeout - new Date().getTime() + this.timeColor;
         if (t < 0) t = 0;
 
-        let t0 = t / this.difficulty().colors.timeout;
+        let t0 = t / this.currentTimeout;
         if (t0 > 1) t0 = 1;
         if (t0 < 0) t0 = 0;
 
@@ -233,11 +237,16 @@ export default defineComponent({
       if (sameAsText) this.trueColor = this.fakeColor;
       else do {
         this.trueColor = Random.pick(Colors);
-      } while (this.trueColor.id === this.fakeColor.id)
+      } while (this.trueColor.id === this.fakeColor.id);
+
+      let timeout = this.difficulty().colors.timeout;
+      if (this.state == GameState.WRONG_ANSWER) timeout += Timer.EXTRA_TIMEOUT;
 
       this.state = GameState.COLOR;
       this.timeColor = new Date().getTime();
-      this.colorTimer = setTimeout(this.timeout, this.difficulty().colors.timeout);
+      
+      this.currentTimeout = timeout;
+      this.colorTimer = setTimeout(this.timeout, timeout);
     },
     timeout() {
       this.state = GameState.WRONG_ANSWER;
@@ -315,7 +324,7 @@ export default defineComponent({
   }
 
   #text {
-    z-index: 10;
+    z-index: $z_game;
   }
 
   #color {
@@ -324,11 +333,12 @@ export default defineComponent({
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.25rem;
+    transition: $text_color_in;
   } 
 
   #color.invisible {
     opacity: 0;
-    transition: 0.25s;
+    transition: $text_color_out;
   }
 
   #countdown {
@@ -337,6 +347,6 @@ export default defineComponent({
 
   #wheel {
     position: absolute;
-    z-index: 5;
+    z-index: $z_game;
   }
 </style>

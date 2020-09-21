@@ -9,10 +9,16 @@ import { IonApp, IonRouterOutlet } from "@ionic/vue";
 import { defineComponent } from "vue";
 
 import { addIcons } from "ionicons";
-import { colorPalette } from "ionicons/icons";
+import { 
+  colorPalette,
+  heart,
+  heartOutline
+} from "ionicons/icons";
 
 addIcons({
   "color-palette": colorPalette,
+  "heart": heart,
+  "heart-outline": heartOutline
 });
 
 export default defineComponent({

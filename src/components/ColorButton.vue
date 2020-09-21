@@ -1,5 +1,5 @@
 <template>
-    <div id="button" :style="rotate + zIndex" :class="shade">
+    <div id="button" :style="rotate" :class="shade + zIndex">
         <div id="text-parent">
             <span id="text" :style="turnText">
                 {{ color.text }}
@@ -41,7 +41,7 @@ export default defineComponent({
         zIndex() {
             const angle = this.normalizeAngle(this.mouseAngle);
             const isHover = angle > this.totalAngle - 30 && angle < this.totalAngle + 30;
-            return "z-index: " + (isHover ? "10" : "5") + "; ";
+            return isHover ? "front" : "back";
         },
         trapezoid() {
             const points = [
@@ -127,7 +127,7 @@ export default defineComponent({
         align-items: center;
         padding-bottom: 3rem;
 
-        z-index: 4;
+        z-index: $z_game + 2;
 
         pointer-events: none;
 
@@ -145,6 +145,13 @@ export default defineComponent({
 
     #button {
         position: absolute;
+
+        &.front {
+            z-index: $z_game + 1;
+        }
+        &.back {
+            z-index: $z_game;
+        }
         
         #hexagon-svg {
             pointer-events: visibleFill;
@@ -235,13 +242,13 @@ export default defineComponent({
 
         &.was-wrong {
             #hexagon {
-                transition: fill $wrong_color_out;
+                transition: fill $wrong_color_out !important;
             }
         }
 
         &.was-right {
             #hexagon {
-                transition: fill $right_color_out;
+                transition: fill $right_color_out !important;
             }
         }
     }
