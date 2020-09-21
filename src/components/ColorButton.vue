@@ -242,13 +242,13 @@ export default defineComponent({
 
         &.was-wrong {
             #hexagon {
-                transition: fill $wrong_color_out !important;
+                transition: fill $wrong_color_out;
             }
         }
 
         &.was-right {
             #hexagon {
-                transition: fill $right_color_out !important;
+                transition: fill $right_color_out;
             }
         }
     }
