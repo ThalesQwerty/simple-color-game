@@ -22,7 +22,7 @@ import { defineComponent } from "vue";
 
 import {
     WithZeroes
-} from "../utils";
+} from "../../utils";
 
 export default defineComponent({
     name: "Score",
@@ -45,7 +45,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-  @import "../style";
+  @import "../../style";
 
 #parent {
     position: absolute;

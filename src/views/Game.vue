@@ -5,8 +5,8 @@
 
         <Score v-if="isInGame" :score="score" :lives="lives" :maxLives="maxLives" />
 
-        
-        <Menu v-if="isInMenu || isGameOver" @play="reset" :score="score" :gameOver="isGameOver" />
+        <Overlay v-if="isInMenu || isGameOver" :state="state" :score="score" @play="reset" />
+
         <div v-else id="center">
           <h1 id="color" :style="color" :class="opacity" v-if="!countdown()">
             {{ fakeColor.text }}
@@ -52,7 +52,7 @@ import {
   Hexagon,
   ColorWheel,
   Score,
-  Menu
+  Overlay,
 } from "../components";
 
 import {
@@ -79,7 +79,7 @@ export default defineComponent({
     Spinner,
     Hexagon,
     Score,
-    Menu
+    Overlay
   },
   data() { return {
     buttons: Colors,

@@ -12,7 +12,7 @@
 <script lang="ts">
 import {
     Trigonometry 
-} from "../data";
+} from "../../data";
 
 import { defineComponent } from "vue";
 
@@ -107,7 +107,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-  @import "../style";
+  @import "../../style";
 
   .hexagon.very-dark {
     fill: $dark1 !important;

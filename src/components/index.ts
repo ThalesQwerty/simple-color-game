@@ -1,9 +1,12 @@
-import Spinner from "./Spinner.vue";
-import Hexagon from "./Hexagon.vue";
-import ColorWheel from "./ColorWheel.vue";
-import ColorButton from "./ColorButton.vue";
-import Score from "./Score.vue";
-import Menu from "./Menu.vue";
+import Spinner from "./game/Spinner.vue";
+import Hexagon from "./game/Hexagon.vue";
+import ColorWheel from "./game/ColorWheel.vue";
+import ColorButton from "./game/ColorButton.vue";
+import Score from "./game/Score.vue";
+
+import Overlay from "./interface/Overlay.vue";
+import Menu from "./interface/Menu.vue";
+import GameOver from "./interface/GameOver.vue";
 
 export {
     Spinner,
@@ -11,5 +14,7 @@ export {
     ColorWheel,
     ColorButton,
     Score,
-    Menu
+    Overlay,
+    Menu,
+    GameOver
 };

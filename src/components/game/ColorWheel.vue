@@ -22,7 +22,7 @@ import ColorButton from "./ColorButton.vue";
 import {
   ButtonState,
   GameState,
-} from "../data";
+} from "../../data";
 
 import { defineComponent } from "vue";
 
@@ -66,7 +66,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-  @import "../style";
+  @import "../../style";
 
   #parent {
     position: relative;

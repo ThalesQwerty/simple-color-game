@@ -8,7 +8,7 @@
 
 import {
   Random
-} from "../utils";
+} from "../../utils";
 
 import { defineComponent } from "vue";
 
@@ -80,7 +80,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-  @import "../style";
+  @import "../../style";
   
   #parent {
       position: relative;

@@ -16,7 +16,7 @@ import { defineComponent } from "vue";
 import {
     ButtonState,
     Trigonometry
-} from "../data";
+} from "../../data";
 
 export default defineComponent({
     name: "ColorButton",
@@ -115,7 +115,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-    @import "../style";
+    @import "../../style";
 
     #text-parent {
         position: absolute; 
