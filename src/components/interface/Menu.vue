@@ -18,6 +18,11 @@
                 Start game
             </ion-button>
         </div>
+        <p>
+            <a href="#" @click.prevent="highscores">
+                Highscores
+            </a>
+        </p>
     </div>
 </template>
 
@@ -33,6 +38,9 @@ export default defineComponent({
     methods: {
         play() {
             this.$emit("play");
+        },
+        highscores() {
+            this.$emit("highscores");
         }
     }
 });
@@ -76,7 +84,4 @@ export default defineComponent({
         color: $light3;
     }
 
-    #icon {
-        font-size: 5rem;
-    }
 </style>

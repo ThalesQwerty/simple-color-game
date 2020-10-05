@@ -1,8 +1,9 @@
 <template>
     <div id="parent" :class="style">
         <div>
-            <Menu v-if="isInMenu" @play="play" />
-            <GameOver v-else-if="isGameOver" :score="score" @play="play" />
+            <Menu v-if="showMenu" @play="play" @highscores="highscores" />
+            <GameOver v-else-if="showGameOver" :score="score" @play="play" />
+            <Highscores v-else-if="showHighscores" />
         </div>
     </div>
 </template>
@@ -12,34 +13,39 @@ import { defineComponent } from "vue";
 
 import Menu from "./Menu.vue";
 import GameOver from "./GameOver.vue";
+import Highscores from "./Highscores.vue";
 
 import {
     GameState
 } from "../../data";
 
 import {
-    WithZeroes
+    WithZeroes,
+    ComputedState
 } from "../../utils";
+
+const { isInMenu, isInHighscores, isInGame, isGameOver } = ComputedState;
 
 export default defineComponent({
     name: "Overlay",
     components: {
         Menu,
-        GameOver
+        GameOver,
+        Highscores
     },
     props: {
         state: Number,
         score: Number
     },
     computed: {
-        isInMenu() {
-            return this.state === GameState.MENU;
+        showMenu() {
+            return isInMenu(this.state);
         },
-        isInGame() {
-            return !this.isInMenu;
+        showGameOver() {
+            return isGameOver(this.state);
         },
-        isGameOver() {
-            return this.state == GameState.GAME_OVER;
+        showHighscores() {
+            return isInHighscores(this.state);
         }
     },
     data() { return {
@@ -53,6 +59,9 @@ export default defineComponent({
                 this.$emit("play");
                 this.style = "";
             }, 500);
+        },
+        highscores() {
+            this.$emit("highscores");
         }
     }
 });

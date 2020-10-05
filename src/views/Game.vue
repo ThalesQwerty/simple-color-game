@@ -3,9 +3,20 @@
     <ion-content :fullscreen="true">
       <div :class="container">
 
-        <Score v-if="isInGame" :score="score" :lives="lives" :maxLives="maxLives" />
+        <Score 
+          v-if="showScore" 
+          :score="score" 
+          :lives="lives" 
+          :maxLives="maxLives" 
+        />
 
-        <Overlay v-if="isInMenu || isGameOver" :state="state" :score="score" @play="reset" />
+        <Overlay 
+          v-if="showOverlay" 
+          :state="state" 
+          :score="score" 
+          @play="reset" 
+          @highscores="highscores"
+        />
 
         <div v-else id="center">
           <h1 id="color" :style="color" :class="opacity" v-if="!countdown()">
@@ -63,8 +74,11 @@ import {
 } from "../data";
 
 import {
-  Random
+  Random,
+  ComputedState
 } from "../utils";
+
+const { isInMenu, isInHighscores, isInGame, isGameOver } = ComputedState;
 
 import Timer from "../data/timers";
 
@@ -140,14 +154,11 @@ export default defineComponent({
     container() {
       return "container" + (this.state === GameState.WRONG_ANSWER ? " wrong" : "");
     },
-    isInMenu() {
-      return this.state === GameState.MENU;
+    showOverlay() {
+      return !isInGame(this.state) || isGameOver(this.state);
     },
-    isInGame() {
-      return !this.isInMenu;
-    },
-    isGameOver() {
-      return this.state == GameState.GAME_OVER;
+    showScore() {
+      return isInGame(this.state);
     }
   },
   created() {
@@ -273,6 +284,9 @@ export default defineComponent({
       this.lives = 3;
       this.score = 0;
       clearTimeout(this.colorTimer);
+    },
+    highscores() {
+      this.state = GameState.HIGHSCORES;
     }
   },
   watch: {
