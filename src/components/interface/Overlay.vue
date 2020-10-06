@@ -3,7 +3,7 @@
         <div>
             <Menu v-if="showMenu" @play="play" @highscores="highscores" />
             <GameOver v-else-if="showGameOver" :score="score" @play="play" />
-            <Highscores v-else-if="showHighscores" />
+            <Highscores v-else-if="showHighscores" :table="table" />
         </div>
     </div>
 </template>
@@ -49,7 +49,15 @@ export default defineComponent({
         }
     },
     data() { return {
-        style: ""
+        style: "",
+        table: [
+            {name: "First", score: 143},
+            {name: "Second", score: 122},
+            {name: "Third", score: 110},
+            {name: "Forth", score: 102},
+            {name: "Fifth", score: 97},
+            {name: "Sixth", score: 85},
+        ]
     }},
     methods: {
         play() {

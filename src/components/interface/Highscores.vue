@@ -4,9 +4,20 @@
             HIGHSCORES
         </h1>
         <hr />
-        <ion-grid>
+        <ion-grid id="table">
             <ion-row>
-                Hello World!
+                <ion-col size="0" size-md="3" />
+                <ion-col>
+                    <ScoreRow header
+                        :row="{name: 'NAME', score: 'SCORE'}"
+                    />
+                    <ScoreRow 
+                        v-for="(row, index) in table"
+                        :key="index"
+                        :row="row"
+                    />
+                </ion-col>
+                <ion-col size="0" size-md="3" />
             </ion-row>
         </ion-grid>
     </div>
@@ -14,6 +25,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
+import ScoreRow from "./ScoreRow.vue";
 
 import {
     IonGrid,
@@ -27,10 +40,14 @@ import {
 
 export default defineComponent({
     name: "Highscores",
+    props: {
+        table: Array
+    },
     components: {
         IonGrid,
         IonRow,
-        IonCol
+        IonCol,
+        ScoreRow
     },
     methods: {
 
@@ -55,6 +72,10 @@ export default defineComponent({
             margin-top: 0;
             font-size: 3rem;
             font-weight: normal;
+        }
+
+        #table {
+            width: 100%;
         }
     }
 
