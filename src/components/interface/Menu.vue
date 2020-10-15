@@ -19,9 +19,9 @@
             </ion-button>
         </div>
         <p>
-            <a href="#" @click.prevent="highscores">
+            <ion-button size="small" expand="block" color="dark" @click.prevent="highscores">
                 Highscores
-            </a>
+            </ion-button>
         </p>
     </div>
 </template>
@@ -46,7 +46,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
     @import "../../style";
 
     #menu {
@@ -57,6 +57,10 @@ export default defineComponent({
 
         letter-spacing: 0.1rem;
         font-weight: lighter;
+
+        width: 33vw !important;
+        min-width: 32rem;
+        max-width: calc(100vw - 1rem);
 
         #title {
             letter-spacing: 0.25rem;
@@ -74,9 +78,10 @@ export default defineComponent({
 
     hr {
         border-bottom: solid $darkF 1px;
+        opacity: 0.5;
         margin-top: 1rem;
         margin-bottom: 2rem;
-        width: calc(100vw - 2rem);
+        width: 100%;
         max-width: 64rem;
     }
 

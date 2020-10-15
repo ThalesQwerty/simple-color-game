@@ -12,13 +12,15 @@ import { addIcons } from "ionicons";
 import { 
   colorPalette,
   heart,
-  heartOutline
+  heartOutline,
+  createOutline,
 } from "ionicons/icons";
 
 addIcons({
   "color-palette": colorPalette,
   "heart": heart,
-  "heart-outline": heartOutline
+  "heart-outline": heartOutline,
+  "create-outline": createOutline,
 });
 
 export default defineComponent({

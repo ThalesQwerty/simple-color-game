@@ -3,7 +3,7 @@
         <div>
             <Menu v-if="showMenu" @play="play" @highscores="highscores" />
             <GameOver v-else-if="showGameOver" :score="score" @play="play" />
-            <Highscores v-else-if="showHighscores" :table="table" />
+            <Highscores v-else-if="showHighscores" :table="table" @menu="menu" />
         </div>
     </div>
 </template>
@@ -50,14 +50,46 @@ export default defineComponent({
     },
     data() { return {
         style: "",
-        table: [
-            {name: "First", score: 143},
-            {name: "Second", score: 122},
-            {name: "Third", score: 110},
-            {name: "Forth", score: 102},
-            {name: "Fifth", score: 97},
-            {name: "Sixth", score: 85},
-        ]
+        table: {
+            "me": {
+                name: "Thales",
+                score: 12
+            },
+            "buttons": ["All time", "This week"],
+            "lists": [
+                [
+                    {name: "First", score: 143},
+                    {name: "Second", score: 122},
+                    {name: "Third", score: 110},
+                    {name: "Forth", score: 102},
+                    {name: "Fifth", score: 97},
+                    {name: "Sixth", score: 85},
+                    {name: "First", score: 143},
+                    {name: "Second", score: 122},
+                    {name: "Third", score: 110},
+                    {name: "Forth", score: 102},
+                    {name: "Fifth", score: 97},
+                    {name: "Sixth", score: 85},
+                    {name: "First", score: 143, me: true},
+                    {name: "Second", score: 122},
+                    {name: "Third", score: 110},
+                    {name: "Forth", score: 102},
+                    {name: "Fifth", score: 97},
+                    {name: "Sixth", score: 85},
+                    {name: "First", score: 143},
+                    {name: "Second", score: 122},
+                    {name: "Third", score: 110},
+                    {name: "Forth", score: 102},
+                    {name: "Fifth", score: 97},
+                    {name: "Sixth", score: 85},
+                ],
+                [
+                    {name: "First", score: 143},
+                    {name: "Second", score: 122},
+                    {name: "Third", score: 110}
+                ]
+            ]
+        }
     }},
     methods: {
         play() {
@@ -68,8 +100,11 @@ export default defineComponent({
                 this.style = "";
             }, 500);
         },
+        menu() {
+            this.$emit("set-state", GameState.MENU);
+        },
         highscores() {
-            this.$emit("highscores");
+            this.$emit("set-state", GameState.HIGHSCORES);
         }
     }
 });

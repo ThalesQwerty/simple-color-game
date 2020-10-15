@@ -51,7 +51,7 @@ export default defineComponent({
     #gameOver {
         letter-spacing: 0.25rem;
         font-weight: lighter;
-
+        
         #score {
             font-size: 4rem;
             margin-top: -0.5rem;

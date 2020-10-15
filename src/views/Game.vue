@@ -15,7 +15,7 @@
           :state="state" 
           :score="score" 
           @play="reset" 
-          @highscores="highscores"
+          @set-state="(newState) => {state = newState}"
         />
 
         <div v-else id="center">
@@ -284,9 +284,6 @@ export default defineComponent({
       this.lives = 3;
       this.score = 0;
       clearTimeout(this.colorTimer);
-    },
-    highscores() {
-      this.state = GameState.HIGHSCORES;
     }
   },
   watch: {

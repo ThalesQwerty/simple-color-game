@@ -1,5 +1,5 @@
 <template>
-    <ion-row>
+    <ion-row id="root" :class="className">
         <ion-col size="6" id="name" :style="bold">
             {{ row.name }}
         </ion-col>
@@ -25,8 +25,8 @@ import {
 export default defineComponent({
     name: "ScoreRow",
     props: {
-        row: Number,
-        header: Boolean
+        row: Object,
+        header: Boolean,
     },
     components: {
         IonGrid,
@@ -36,6 +36,9 @@ export default defineComponent({
     computed: {
         bold() {
             return this.header ? "font-weight: bold;" : "";
+        },
+        className() {
+            return (this.header ? "header" : "row") + (this.row.me ? " me" : "");
         }
     },
     methods: {
@@ -44,8 +47,24 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
     @import "../../style";
+
+    #root {
+        padding: 0.125rem;
+        transition: background-color 0.25s;
+        user-select: none;
+
+        &.row:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.1s;
+        }
+
+        &.me {
+            color: var(--ion-color-warning);
+            font-weight: bold;
+        }
+    }
 
     #score {
         text-align: right;
