@@ -7,8 +7,12 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "node server/server.js",
+    "test": "node ace test"
   },
+  "description": "An Ionic project",
+  "license": "UNLICENSED",
   "dependencies": {
     "@ionic/vue": "0.3.1",
     "@ionic/vue-router": "0.3.1",
@@ -16,7 +20,17 @@
     "express": "^4.17.1",
     "path": "^0.12.7",
     "vue": "^3.0.0-rc.10",
-    "vue-router": "^4.0.0-beta.9"
+    "vue-router": "^4.0.0-beta.9",
+    "@adonisjs/ace": "^5.0.8",
+    "@adonisjs/auth": "^3.0.7",
+    "@adonisjs/bodyparser": "^2.0.5",
+    "@adonisjs/cors": "^1.0.7",
+    "@adonisjs/fold": "^4.0.9",
+    "@adonisjs/framework": "^5.0.9",
+    "@adonisjs/ignitor": "^2.0.8",
+    "@adonisjs/lucid": "^6.1.3",
+    "@adonisjs/session": "^1.0.27",
+    "@adonisjs/shield": "^1.0.8"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
@@ -39,5 +53,7 @@
     "typescript": "^3.9.7",
     "vue-jest": "^5.0.0-0"
   },
-  "description": "An Ionic project"
+  "autoload": {
+    "App": "./server/app"
+  }
 }
