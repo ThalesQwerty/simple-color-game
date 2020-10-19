@@ -29,6 +29,7 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+/public
 
 # Node modules
 node_modules
@@ -46,5 +47,3 @@ database/*.sqlite
 # VSCode & Webstorm history directories
 .history
 .idea
-
-/public
