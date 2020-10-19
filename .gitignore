@@ -47,4 +47,4 @@ database/*.sqlite
 .history
 .idea
 
-server/public
+/public
