@@ -1,10 +1,25 @@
 export default class Random {
-    static number(min = 0, max = 0) {
+    static number(min = 0, max = 1) {
         return Math.random() * (max - min) + min;
     }
 
     static int(min = 0, max = 0, includeMax = false) {
         return includeMax ? Math.floor(Random.number(min, max + 1)) : Math.floor(Random.number(min, max));
+    }
+
+    static string(length = 16, lowerCase = true, upperCase = true, digits = true) {
+        const chars =
+            (lowerCase ? "abcdefghijklmnopqrstuvwxyz" : "") +
+            (upperCase ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "") +
+            (digits    ? "1234567890"                 : "");
+
+        let str = "";
+
+        for (let i = 0; i < length; i++) {
+            str += chars[this.int(0, chars.length)];
+        }
+
+        return str;
     }
 
     static pick(...options) {
