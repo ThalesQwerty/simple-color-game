@@ -17,6 +17,10 @@ class User extends Model {
     })
   }
 
+  static get hidden () {
+    return ['key', 'created_at', 'updated_at']
+  }
+
   /**
    *
    * @method scores

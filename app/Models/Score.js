@@ -8,6 +8,10 @@ class Score extends Model {
     super.boot();
   }
 
+  static get hidden () {
+    return ['user_id', 'updated_at']
+  }
+
     /**
    *
    * @method user
@@ -17,6 +21,8 @@ class Score extends Model {
   user() {
     return this.belongsTo('App/Models/User')
   }
+
+
 }
 
 module.exports = Score;

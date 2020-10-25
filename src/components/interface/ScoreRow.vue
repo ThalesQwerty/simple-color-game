@@ -1,9 +1,12 @@
 <template>
     <ion-row id="root" :class="className">
+        <ion-col size="1" id="name" :style="bold">
+            {{ row.rank }}
+        </ion-col>
         <ion-col size="6" id="name" :style="bold">
             {{ row.name }}
         </ion-col>
-        <ion-col size="6" id="score" :style="bold">
+        <ion-col size="5" id="score" :style="bold">
             {{ row.score }}
         </ion-col>
     </ion-row>

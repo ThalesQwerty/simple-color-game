@@ -19,3 +19,16 @@ const Route = use('Route')
 Route.get("/teste", () => {
     return { greeting: "Hello world in JSON" };
   });
+
+Route.group(() => {
+    Route.post("/", "UserController.store");
+    Route.post("/:id", "UserController.update").middleware(['verifyKey']);
+}).prefix("user");
+
+Route.group(() => {
+    Route.post("/:id", "ScoreController.store").middleware(['verifyKey']);
+    Route.get("/", "ScoreController.index");
+}).prefix("scores");
+
+
+

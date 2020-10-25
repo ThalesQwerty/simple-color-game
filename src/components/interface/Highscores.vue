@@ -1,6 +1,7 @@
 <template>
     <div id="root">
-        <div id="highscores" v-if="highscores">
+        <Loading v-if="loading" />
+        <div id="highscores" v-else-if="highscores">
             <ion-grid>
                 <ion-row>
                     <h1 id="title">
@@ -14,12 +15,12 @@
                         <ion-row>
                             <div id="header">
                                 <ScoreRow header
-                                    :row="{name: 'NAME', score: 'SCORE'}"
+                                    :row="{rank:'#', name: 'NAME', score: 'SCORE'}"
                                 />
                             </div>
                             <div id="rows">
-                                <ScoreRow 
-                                    v-for="(row, index) in currentList"
+                                <ScoreRow
+                                    v-for="(row, index) in currentList[selected]"
                                     :key="index"
                                     :row="row"
                                 />
@@ -28,21 +29,21 @@
                         <ion-row id="footer">
                             <div id="buttons">
                                 <div id="left-buttons">
-                                    <ion-button 
-                                        v-for="(button, index) in table.buttons" 
-                                        :key="index" 
+                                    <ion-button
+                                        v-for="(button, index) in table.buttons"
+                                        :key="index"
 
-                                        size="small" 
+                                        size="small"
                                         expand="block"
 
                                         :color="index === selected ? 'success' : 'dark' "
                                         @click="() => {selected = index}"
                                     >
-                                        {{ button }}
+                                        {{ button.name }}
                                     </ion-button>
                                 </div>
                                 <div id="right-buttons" v-if="user">
-                                    <ion-button 
+                                    <ion-button
                                         fill="clear"
                                         size="small"
 
@@ -61,7 +62,7 @@
                                         </div>
                                         <ion-icon id="edit-button" name="create-outline" />
                                     </ion-button>
-                                </div>  
+                                </div>
                             </div>
                             <div id="menu">
                                 <ion-button size="large" expand="block" color="primary" @click="menu">
@@ -75,39 +76,25 @@
             </ion-grid>
         </div>
 
-        <div id="change-name" v-else>
-            Type your new nickname
-           <ion-input id="input-name" color="warning" placeholder="Nickname" :value="user.name"></ion-input>
-           <div id="buttons-name">
-            <ion-button 
-                    size="small" 
-                    expand="block"
+        <InsertName v-else
+            :name="user.name"
+            title="Type your new username"
 
-                    color="primary"
-                    @click="() => {highscores = true}"
-                >
-                    Submit
-                </ion-button>
-                <ion-button 
-                    size="small" 
-                    expand="block"
-
-                    color="dark"
-                    @click="() => {highscores = true}"
-
-                    id="cancel-change"
-                >
-                    Cancel
-                </ion-button>
-            </div>
-        </div>
+            @submit="reload"
+            @cancel="() => {highscores = true}"
+        />
     </div>
 </template>
 
 <script lang="ts">
+declare const process;
+declare const require;
+
 import { defineComponent } from "vue";
 
 import ScoreRow from "./ScoreRow.vue";
+import InsertName from "./InsertName.vue";
+import Loading from "./Loading.vue";
 
 import {
     IonSplitPane,
@@ -115,9 +102,6 @@ import {
     IonGrid,
     IonRow,
     IonCol,
-    IonTabs,
-    IonTabButton,
-    IonTabBar,
     IonIcon,
     IonItem,
     IonInput,
@@ -128,6 +112,8 @@ import {
     WithZeroes
 } from "../../utils";
 
+const axios = require('axios');
+
 export default defineComponent({
     name: "Highscores",
     components: {
@@ -137,27 +123,25 @@ export default defineComponent({
         IonRow,
         IonCol,
         ScoreRow,
-        IonTabs,
-        IonTabButton,
-        IonTabBar,
         IonIcon,
         IonItem,
         IonInput,
-        IonLabel
+        IonLabel,
+        InsertName,
+        Loading
     },
     props: {
         table: Object
     },
     data() { return {
         selected: 0,
+        loading: true,
         highscores: true,
+        currentList: []
     }},
     computed: {
-        currentList() {
-            return this.table.lists[this.selected];
-        },
         user() {
-            for (const row of this.currentList) {
+            for (const row of this.currentList[this.selected]) {
                 if (row.me) {
                     return {
                         name: row.name,
@@ -171,8 +155,50 @@ export default defineComponent({
     methods: {
         menu() {
             this.$emit("menu");
+        },
+        reload() {
+            this.loading = true;
+            this.highscores = true;
+
+            const timestamps = this.table.buttons.map((button) => button.timestamp);
+            let loaded = 0;
+
+            console.log("TIMESTAMPS", timestamps)
+
+            this.currentList = [];
+
+            for (const i in timestamps) {
+
+                axios.get(process.env.VUE_APP_API_URL + "/scores", {"timestamp": timestamps[i]})
+                    .then(response => {
+                        const data = response.data;
+                        const list = [];
+
+                        for (let i = 0; i < data.length; i++) {
+                            const row = data[i];
+                            list.push({
+                                me: row.user.id == localStorage.userId,
+                                rank: i + 1,
+                                name: row.user.name,
+                                score: row.score
+                            })
+                        }
+
+                        this.currentList[i] = list;
+                        loaded ++;
+
+                        if (loaded >= timestamps.length) this.loading = false;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
+
+            }
         }
     },
+    mounted() {
+        this.reload();
+    }
 });
 </script>
 
@@ -217,7 +243,7 @@ export default defineComponent({
 
         margin-top: 1rem;
 
-        width: 100%; 
+        width: 100%;
     }
 
     #buttons-name {
@@ -265,7 +291,7 @@ export default defineComponent({
         #left-buttons {
             display: flex;
             justify-content: flex-start;
-            
+
         }
 
         #right-buttons {
@@ -285,7 +311,7 @@ export default defineComponent({
 
         #name {
             font-size: 0.875rem;
-            
+
         }
 
         #score {
@@ -310,7 +336,7 @@ export default defineComponent({
         color: $light3;
     }
 
-    
+
     *::-webkit-scrollbar {
         width: 0.25rem;
         margin-left: -0.25rem;

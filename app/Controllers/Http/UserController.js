@@ -3,28 +3,41 @@
 const User = use("App/Models/User");
 
 class UserController {
+
+    generateKey(length = 16) {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+        let str = "";
+
+        for (let i = 0; i < length; i++) {
+            str += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        return str;
+    }
+
   async store({ request, response }) {
-    const data = request.only(["name"]);
-
     const user = new User();
-    user.name = data.name;
-    user.key = await auth.generate(user)
-    user.save();
 
-    return response.status(200).json({"id": user.id, "key": accessToken});
+    const key = this.generateKey(16);
+
+    user.name = request.all().name;
+    user.key = key;
+    // user.key = await auth.generate(user);
+    await user.save();
+
+    return response.status(200).json({"name": user.name, "id": user.id, "key": key});
   }
 
-  async update({ request, auth }) {
+  async update({ response, request }) {
     try {
-      const data = request.only(["name"]);
-      const user = auth.user;
+        request.user.name = request.all().name;
+        await request.user.save();
 
-      user.merge(data);
-      await user.save();
+        return response.status(200).json({"name": request.all().name});
 
-      return user;
     } catch (error) {
-      return response.status(500).send({ error });
+      return response.status(500);
     }
   }
 }

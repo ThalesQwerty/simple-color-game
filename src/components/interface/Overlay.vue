@@ -2,7 +2,7 @@
     <div id="parent" :class="style">
         <div>
             <Menu v-if="showMenu" @play="play" @highscores="highscores" />
-            <GameOver v-else-if="showGameOver" :score="score" @play="play" />
+            <GameOver v-else-if="showGameOver" :score="score" @play="play" @highscores="highscores" />
             <Highscores v-else-if="showHighscores" :table="table" @menu="menu" />
         </div>
     </div>
@@ -55,7 +55,10 @@ export default defineComponent({
                 name: "Thales",
                 score: 12
             },
-            "buttons": ["All time", "This week"],
+            "buttons": [
+                {name: "All time", timestamp: 0},
+                {name: "This week", timestamp: 7 * 24 * 3600 * 1000}
+            ],
             "lists": [
                 [
                     {name: "First", score: 143},
@@ -122,7 +125,7 @@ export default defineComponent({
 
     #parent {
         @extend .centralized;
-        
+
         z-index: $z_menu;
         background: rgba(0, 0, 0, 0.5);
         width: 100vw;

@@ -3,18 +3,18 @@
     <ion-content :fullscreen="true">
       <div :class="container">
 
-        <Score 
-          v-if="showScore" 
-          :score="score" 
-          :lives="lives" 
-          :maxLives="maxLives" 
+        <Score
+          v-if="showScore"
+          :score="score"
+          :lives="lives"
+          :maxLives="maxLives"
         />
 
-        <Overlay 
-          v-if="showOverlay" 
-          :state="state" 
-          :score="score" 
-          @play="reset" 
+        <Overlay
+          v-if="showOverlay"
+          :state="state"
+          :score="score"
+          @play="reset"
           @set-state="(newState) => {state = newState}"
         />
 
@@ -27,26 +27,37 @@
           </h1>
         </div>
 
-        <Hexagon :zindex="2" :minSide="side() + 16" :maxSide="minSide" :angle="angle" :fraction="hexagonFraction" fill="very-dark" />
+        <Hexagon
+            :zindex="2"
+            :minSide="side() + 16"
+            :maxSide="minSide"
+            :angle="angle"
+            :fraction="hexagonFraction"
+            fill="very-dark"
+        />
         <!-- <Hexagon :zindex="1" :minSide="side()" :maxSide()="maxSide()" :angle="angle" :fraction="hexagonFraction" triangles/> -->
-        <Spinner @spin="spin" :difficulty="difficulty()" :frame="frameCounter" />
+        <Spinner
+            @spin="spin"
+            :difficulty="difficulty()"
+            :frame="frameCounter"
+        />
 
         <ColorWheel id="wheel"
           :buttons="buttons"
-          :side="wheelSide()" 
-          :thickness="wheelThickness()" 
-          
+          :side="wheelSide()"
+          :thickness="wheelThickness()"
+
           :rightColor="trueColor"
           :selectedColor="selectedColor"
           :state="state"
           :angle="angle"
           :mouseAngle="mouseAngle"
           :frame="frameCounter"
-          @pick="pickColor" 
+          @pick="pickColor"
         />
 
       </div>
-      
+
     </ion-content>
   </ion-page>
 </template>
@@ -95,6 +106,12 @@ export default defineComponent({
     Score,
     Overlay
   },
+  props: {
+      initialState: {
+          type: Number,
+          default: GameState.MENU
+      }
+  },
   data() { return {
     buttons: Colors,
     rawSide: Math.min(window.innerWidth / 2 - 36, 250),
@@ -108,11 +125,11 @@ export default defineComponent({
     fakeColor: null,
     selectedColor: null,
     timeColor: null,
-    
+
     startTime: new Date().getTime(),
     seconds: 3,
-    state: GameState.MENU,
-    lastState: GameState.MENU,
+    state: this.initialState,
+    lastState: this.initialState,
     colorTimer: null,
 
     score: 0,
@@ -122,7 +139,7 @@ export default defineComponent({
     level: 1,
     currentTimeout: 0,
 
-    animation: null, 
+    animation: null,
     frameCounter: 0,
     lastFrame: new Date().getTime(),
     deltaTime: 0,
@@ -141,11 +158,11 @@ export default defineComponent({
     opacity() {
       let style = "";
 
-      style += this.state === GameState.COLOR ? 
-        "" : 
+      style += this.state === GameState.COLOR ?
+        "" :
         "invisible ";
 
-      style += this.lastState === GameState.RIGHT_ANSWER ? 
+      style += this.lastState === GameState.RIGHT_ANSWER ?
         "right " :
         "wrong ";
 
@@ -191,9 +208,9 @@ export default defineComponent({
       this.frameCounter++;
 
       let smoothness = 0.8;
-      
+
       if (this.state !== GameState.COLOR) {
-        
+
         this.timeRemainingFraction = 1;
 
       } else {
@@ -254,7 +271,7 @@ export default defineComponent({
       this.colorTimer = setTimeout(() => this.randomColor(Random.pick(
           Random.option(true, this.difficulty().colors.sameAsTextChance),
           Random.option(false, 1 - this.difficulty().colors.sameAsTextChance)
-        )), 
+        )),
       timer);
     },
     randomColor(sameAsText = false) {
@@ -270,7 +287,7 @@ export default defineComponent({
 
       this.state = GameState.COLOR;
       this.timeColor = new Date().getTime();
-      
+
       this.currentTimeout = timeout;
       this.colorTimer = setTimeout(this.timeout, timeout);
     },
@@ -356,7 +373,7 @@ export default defineComponent({
     text-transform: uppercase;
     letter-spacing: 0.25rem;
     transition: $text_color_in;
-  } 
+  }
 
   #color.invisible {
     opacity: 0;
