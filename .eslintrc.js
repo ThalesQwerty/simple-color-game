@@ -17,6 +17,7 @@ module.exports = {
     'vue/no-deprecated-slot-attribute': 'off',
     'vue/no-unused-components': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'off'
   },
   overrides: [
     {
