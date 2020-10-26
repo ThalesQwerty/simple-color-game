@@ -70,8 +70,8 @@ export default defineComponent({
         },
         submitScore() {
             axios.post(
-                process.env.VUE_APP_API_URL + "/scores/" + localStorage.userId,
-                { score: this.score }, 
+                (process.env.VUE_APP_API_URL || "") + "/scores/" + localStorage.userId,
+                { score: this.score },
                 { headers: {"Authorization": `Bearer ${localStorage.userKey}` } }
             )
                 .then(response => {

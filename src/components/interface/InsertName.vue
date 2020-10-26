@@ -85,7 +85,7 @@ export default defineComponent({
     methods: {
         submit() {
             axios.post(
-                process.env.VUE_APP_API_URL + "/user" + (localStorage.userId ? "/" + localStorage.userId : ""),
+                (process.env.VUE_APP_API_URL || "") + "/user" + (localStorage.userId ? "/" + localStorage.userId : ""),
                 { name: this.newName.trim() },
                 { headers: {"Authorization": `Bearer ${localStorage.userKey}` } }
             )
