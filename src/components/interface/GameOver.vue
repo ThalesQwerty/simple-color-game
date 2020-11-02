@@ -74,11 +74,9 @@ export default defineComponent({
                 { score: this.score },
                 { headers: {"Authorization": `Bearer ${localStorage.userKey}` } }
             )
-                .then(response => {
-                    const data = response.data;
-
-                    this.$emit("highscores");
-                })
+            .then(() => {
+                this.$emit("highscores");
+            })
         }
     }
 });

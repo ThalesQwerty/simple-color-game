@@ -52,10 +52,6 @@ import {
     IonLabel
 } from "@ionic/vue"
 
-import {
-    WithZeroes
-} from "../../utils";
-
 const axios = require("axios");
 
 export default defineComponent({

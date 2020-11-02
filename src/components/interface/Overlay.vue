@@ -20,11 +20,10 @@ import {
 } from "../../data";
 
 import {
-    WithZeroes,
     ComputedState
 } from "../../utils";
 
-const { isInMenu, isInHighscores, isInGame, isGameOver } = ComputedState;
+const { isInMenu, isInHighscores, isGameOver } = ComputedState;
 
 export default defineComponent({
     name: "Overlay",
