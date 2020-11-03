@@ -37,7 +37,7 @@
                                         expand="block"
 
                                         :color="index === selected ? 'success' : 'dark' "
-                                        @click="() => {selected = index}"
+                                        @click="() => {selectList(index)}"
                                     >
                                         {{ button.name }}
                                     </ion-button>
@@ -49,7 +49,7 @@
 
                                         color="danger"
 
-                                        @click="() => {highscores = false}"
+                                        @click="alterName"
                                     >
                                         <div id="user-info">
                                             <span id="name">
@@ -81,7 +81,7 @@
             title="Type your new username"
 
             @submit="reload"
-            @cancel="() => {highscores = true}"
+            @cancel="cancelAlterName"
         />
     </div>
 </template>
@@ -109,8 +109,13 @@ import {
 } from "@ionic/vue"
 
 import {
-    WithZeroes
+    WithZeroes,
+    SFXPlayer
 } from "../../utils";
+
+import {
+    SFX
+} from "../../data";
 
 const axios = require('axios');
 
@@ -153,12 +158,27 @@ export default defineComponent({
         }
     },
     methods: {
+        alterName() {
+            this.highscores = false;
+            SFXPlayer.play(SFX.CLICK);
+        },
+        cancelAlterName() {
+            this.highscores = true;
+            SFXPlayer.play(SFX.CLICK);
+        },
+        selectList(index) {
+            this.selected = index;
+            SFXPlayer.play(SFX.CLICK);
+        },
         menu() {
+            SFXPlayer.play(SFX.CLICK);
             this.$emit("menu");
         },
-        reload() {
+        reload(sfx = true) {
             this.loading = true;
             this.highscores = true;
+
+            if (sfx) SFXPlayer.play(SFX.CLICK);
 
             const timestamps = this.table.buttons.map((button) => button.timestamp);
             let loaded = 0;
@@ -200,7 +220,7 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.reload();
+        this.reload(false);
     }
 });
 </script>

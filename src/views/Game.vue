@@ -10,6 +10,8 @@
           :maxLives="maxLives"
         />
 
+        <SFXButton :active="sfxOn" @toggle="toggleMute" />
+
         <Overlay
           v-if="showOverlay"
           :state="state"
@@ -63,7 +65,6 @@
 </template>
 
 <script lang="ts">
-
 import {
   IonContent,
   IonPage
@@ -75,18 +76,21 @@ import {
   ColorWheel,
   Score,
   Overlay,
+  SFXButton
 } from "../components";
 
 import {
   Colors,
   GameState,
   Difficulty,
+  SFX,
   Trigonometry
 } from "../data";
 
 import {
   Random,
-  ComputedState
+  ComputedState,
+  SFXPlayer
 } from "../utils";
 
 const { isInMenu, isInHighscores, isInGame, isGameOver } = ComputedState;
@@ -104,7 +108,8 @@ export default defineComponent({
     Spinner,
     Hexagon,
     Score,
-    Overlay
+    Overlay,
+    SFXButton
   },
   props: {
       initialState: {
@@ -125,9 +130,12 @@ export default defineComponent({
     fakeColor: null,
     selectedColor: null,
     timeColor: null,
+    countdownInterval: null,
+
+    sfxOn: !SFXPlayer.muted,
 
     startTime: new Date().getTime(),
-    seconds: 3,
+    seconds: Math.floor(Timer.COUNTDOWN / 1000),
     state: this.initialState,
     lastState: this.initialState,
     colorTimer: null,
@@ -184,6 +192,10 @@ export default defineComponent({
     this.animation = setInterval(() => this.update(), 16);
   },
   methods: {
+    toggleMute() {
+        this.sfxOn = !this.sfxOn;
+        SFXPlayer.muted = !SFXPlayer.muted;
+    },
     updateMouse(e: MouseEvent) {
       const angle = 90 + Math.atan2(e.pageY - window.innerHeight / 2, e.pageX - window.innerWidth / 2) * Trigonometry.DEG;
       this.mouseAngle = angle;
@@ -235,22 +247,28 @@ export default defineComponent({
       this.angle = angle;
     },
     countdown() {
-      if (this.state !== GameState.COUNTDOWN) return 0;
+        if (this.countdownInterval == null) {
+            if (this.state !== GameState.COUNTDOWN) return 0;
 
-      const seconds = Math.ceil((Timer.COUNTDOWN - new Date().getTime() + this.startTime) / 1000);
+            const seconds = Math.ceil((Timer.COUNTDOWN - new Date().getTime() + this.startTime) / 1000);
 
-      if (seconds <= 0) {
-        this.randomColor(Random.pick(
-          Random.option(true, this.difficulty().colors.sameAsTextChance),
-          Random.option(false, 1 - this.difficulty().colors.sameAsTextChance)
-        ));
-      }
-      else {
-        setTimeout(() => this.countdown(), 1000);
-      }
+            if (seconds <= 0) {
+                this.randomColor(Random.pick(
+                Random.option(true, this.difficulty().colors.sameAsTextChance),
+                Random.option(false, 1 - this.difficulty().colors.sameAsTextChance)
+                ));
+            }
+            else {
+                SFXPlayer.play(SFX.COUNTDOWN);
+                this.countdownInterval = setTimeout(() => {
+                    this.countdownInterval = null;
+                    this.countdown();
+                }, 1000);
+            }
 
-      this.seconds = seconds;
-      return seconds;
+            this.seconds = seconds;
+        }
+        return this.seconds;
     },
     updateSide() {
       this.rawSide = Math.min(window.innerWidth / 2 - 36, 250);
@@ -290,6 +308,8 @@ export default defineComponent({
 
       this.currentTimeout = timeout;
       this.colorTimer = setTimeout(this.timeout, timeout);
+
+      SFXPlayer.play(SFX.NEW_COLOR);
     },
     timeout() {
       this.state = GameState.WRONG_ANSWER;
@@ -312,14 +332,17 @@ export default defineComponent({
       this.lastState = old;
       switch (val) {
         case GameState.RIGHT_ANSWER:
+            SFXPlayer.play(SFX.RIGHT_ANSWER);
           this.score ++;
           this.prepareColor(Timer.RIGHT_ANSWER);
           break;
         case GameState.WRONG_ANSWER:
           this.lives --;
+          if (this.lives > 0) SFXPlayer.play(SFX.WRONG_ANSWER);
           this.prepareColor(Timer.WRONG_ANSWER);
           break;
         case GameState.GAME_OVER:
+            SFXPlayer.play(SFX.GAME_OVER);
           clearTimeout(this.colorTimer);
           break;
       }

@@ -16,11 +16,13 @@ import GameOver from "./GameOver.vue";
 import Highscores from "./Highscores.vue";
 
 import {
-    GameState
+    GameState,
+    SFX
 } from "../../data";
 
 import {
-    ComputedState
+    ComputedState,
+    SFXPlayer
 } from "../../utils";
 
 const { isInMenu, isInHighscores, isGameOver } = ComputedState;
@@ -95,6 +97,7 @@ export default defineComponent({
     }},
     methods: {
         play() {
+            SFXPlayer.play(SFX.CLICK);
             this.style = "invisible";
 
             setTimeout(() => {
@@ -103,9 +106,11 @@ export default defineComponent({
             }, 500);
         },
         menu() {
+            SFXPlayer.play(SFX.CLICK);
             this.$emit("set-state", GameState.MENU);
         },
         highscores() {
+            SFXPlayer.play(SFX.CLICK);
             this.$emit("set-state", GameState.HIGHSCORES);
         }
     }

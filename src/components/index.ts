@@ -7,6 +7,7 @@ import Score from "./game/Score.vue";
 import Overlay from "./interface/Overlay.vue";
 import Menu from "./interface/Menu.vue";
 import GameOver from "./interface/GameOver.vue";
+import SFXButton from "./interface/SFXButton.vue";
 
 export {
     Spinner,
@@ -16,5 +17,6 @@ export {
     Score,
     Overlay,
     Menu,
-    GameOver
+    GameOver,
+    SFXButton
 };
