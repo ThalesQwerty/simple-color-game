@@ -42,8 +42,6 @@ class ScoreController {
         const date = new Date(timestamp);
         const formattedDate = this.formatDate(date);
 
-        console.log(formattedDate);
-
         const table = await (timestamp ?
             Score.query().with('user').whereRaw('created_at >= timestamp \'' + formattedDate + '\'').orderBy('score', 'desc').fetch() :
             Score.query().with('user').orderBy('score', 'desc').fetch());
