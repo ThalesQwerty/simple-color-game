@@ -11,14 +11,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Game',
     component: Game,
+    meta: {
+        title: "Simple Color Game"
+    },
     props: { initialState: GameState.MENU },
-  },
-  {
-    path: '/highscores',
-    name: 'Highscores',
-    props: { initialState: GameState.HIGHSCORES },
-    component: Game,
-  },
+  }
 ];
 
 const router = createRouter({
