@@ -15,7 +15,8 @@ import {
   heartOutline,
   createOutline,
   volumeHigh,
-  volumeMute
+  volumeMute,
+  logoGithub
 } from "ionicons/icons";
 
 addIcons({
@@ -24,7 +25,8 @@ addIcons({
   "heart-outline": heartOutline,
   "create-outline": createOutline,
   "volume-high": volumeHigh,
-  "volume-mute": volumeMute
+  "volume-mute": volumeMute,
+  "logo-github": logoGithub
 });
 
 export default defineComponent({
