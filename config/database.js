@@ -70,6 +70,6 @@ module.exports = {
   */
   pg: {
     client: 'pg',
-    connection: Env.get('DATABASE_URL', 'postgres://root:@localhost:5432/adonis') + "?sslmode=require",
+    connection: Env.get('DATABASE_URL', 'postgres://root:@localhost:5432/adonis') + "?ssl=true",
   }
 }
