@@ -189,10 +189,7 @@ export default defineComponent({
 
             for (const i in timestamps) {
 
-                axios.get(
-                    (process.env.VUE_APP_API_URL || "") + "/scores",
-                    {"timestamp": timestamps[i]}
-                )
+                axios.get(`${process.env.VUE_APP_API_URL || ''}/scores?timestamp=${timestamps[i]}`)
                     .then(response => {
                         const data = response.data;
                         const list = [];
