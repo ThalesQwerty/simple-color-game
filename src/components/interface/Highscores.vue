@@ -188,8 +188,9 @@ export default defineComponent({
             this.currentList = [];
 
             for (const i in timestamps) {
+                const timestamp = parseInt(timestamps[i]);
 
-                axios.get(`${process.env.VUE_APP_API_URL || ''}/scores?timestamp=${timestamps[i]}`)
+                axios.get(`${process.env.VUE_APP_API_URL || ''}/scores${timestamp ? "?timestamp=" + timestamp : ""}`)
                     .then(response => {
                         const data = response.data;
                         const list = [];
